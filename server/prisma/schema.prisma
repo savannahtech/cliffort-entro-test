@@ -9,3 +9,21 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Task {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  assigneeName   String?
+  assigneeAvatar String?
+  status         Status   @default(PENDING)
+  creationDate   DateTime @default(now())
+  taskId         String?  @db.ObjectId
+  task           Task?    @relation("TasksRelatedTasks", fields: [taskId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  relatedTasks   Task[]   @relation("TasksRelatedTasks")
+}
