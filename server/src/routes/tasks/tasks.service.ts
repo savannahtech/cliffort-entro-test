@@ -1,5 +1,6 @@
 import { PrismaClient, Status, type Task } from '@prisma/client';
 import { TaskListQuery } from './tasks.controller';
+import { TASK_NOT_FOUND_MES } from '../../constants';
 
 export class TasksService {
 	get _prismaClient() {
@@ -82,7 +83,7 @@ export class TasksService {
 
 			return taskDetails;
 		} catch (e) {
-			return { error: 'Data not found' };
+			return { error: TASK_NOT_FOUND_MES };
 		}
 	}
 
@@ -103,11 +104,60 @@ export class TasksService {
 				},
 			});
 			return {
-				message: 'Created successfully',
+				message: 'Task Create successfully',
 			};
 		} catch (error) {
 			return {
 				error: 'Creation failed',
+			};
+		}
+	}
+
+	async updateTask(taskId: string, updatedData: Partial<Task>) {
+		try {
+			const existingTask = await this._prismaClient.task.findUnique({
+				where: { id: taskId },
+			});
+
+			if (!existingTask) {
+				return {
+					error: TASK_NOT_FOUND_MES,
+				};
+			}
+
+			const { title, status, relatedTaskId } = updatedData;
+
+			//TODO: add functionality to update assignee data
+
+			// Update the task
+			const updatedTask = await this._prismaClient.task.update({
+				where: { id: taskId },
+				data: {
+					title: title || existingTask.title,
+					status: status || existingTask.status,
+					...(relatedTaskId
+						? {
+								task: {
+									connect: {
+										id: relatedTaskId,
+									},
+								},
+						  }
+						: {
+								task: {
+									disconnect: true, // Handle case where related task is removed
+								},
+						  }),
+				},
+			});
+
+			return {
+				message: 'Task updated successfully',
+				updatedTask,
+			};
+		} catch (error) {
+			return {
+				error: 'Update failed',
 			};
 		}
 	}

@@ -8,6 +8,10 @@ export interface TaskListQuery {
 	status?: Status[];
 }
 
+export interface TaskIdParam {
+	taskId?: string;
+}
+
 const service = new TasksService();
 export class TasksController {
 	static _prismaClient = new PrismaClient();
@@ -18,12 +22,17 @@ export class TasksController {
 	}
 
 	@route()
-	async getTaskDetails({ params }: RequestData<unknown, unknown, { taskId?: string }>) {
+	async getTaskDetails({ params }: RequestData<unknown, unknown, TaskIdParam>) {
 		return service.getTaskDetails(params.taskId);
 	}
 
 	@route()
 	async createTask({ payload }: RequestData<Task, unknown, unknown>) {
 		return service.createTask(payload);
+	}
+
+	@route()
+	async updateTask({ payload, params }: RequestData<Task, unknown, TaskIdParam>) {
+		return service.updateTask(params.taskId, payload);
 	}
 }
