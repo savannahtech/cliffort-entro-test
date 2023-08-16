@@ -16,4 +16,9 @@ export class TasksController {
 	async getTasks({ query }: RequestData<unknown, TaskListQuery>) {
 		return service.getTasks(query);
 	}
+
+	@route()
+	async getTaskDetails({ params }: RequestData<unknown, unknown, { taskId?: string }>) {
+		return service.getTaskDetails(params.taskId);
+	}
 }

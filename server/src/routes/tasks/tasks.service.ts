@@ -64,4 +64,21 @@ export class TasksService {
 
 		return updatedFilter;
 	}
+
+	async getTaskDetails(taskId?: string) {
+		try {
+			const taskDetails = await this._prismaClient.task.findUnique({
+				where: {
+					id: taskId,
+				},
+				include: {
+					relatedTasks: true,
+				},
+			});
+
+			return taskDetails;
+		} catch (e) {
+			return { error: 'Data not found' };
+		}
+	}
 }
