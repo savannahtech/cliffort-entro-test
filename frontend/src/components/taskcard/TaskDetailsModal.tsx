@@ -9,6 +9,8 @@ import { GrAdd } from 'react-icons/gr';
 import { TaskCardDetailsTabs } from './TaskCardDetailsTabs';
 import { Inter } from 'next/font/google';
 
+const inter = Inter({ subsets: ['latin'] });
+
 interface Props {
 	isOpen: boolean;
 	handleCloseModal: () => void;
@@ -21,11 +23,15 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal }: Props) => {
 			onClose={handleCloseModal}
 			aria-labelledby="task-details-modal"
 			aria-describedby="scroll-dialog-description"
+			maxWidth="lg"
+			className={inter.className}
 		>
 			<DialogTitle id="task-details-modal">Task Title</DialogTitle>
 			<DialogContent dividers={true}>
 				<TaskCard />
-				<Divider />
+				<Stack mt={2}>
+					<Divider />
+				</Stack>
 				<Stack p={3} pt={4}>
 					<Stack direction={'row'} columnGap={10}>
 						<Stack gap={1}>
@@ -64,7 +70,7 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal }: Props) => {
 				</Stack>
 			</DialogContent>
 			<DialogActions>
-				<CustomButton btnText="Close" btnType="primary" />
+				<CustomButton btnText="Close" btnType="primary" onClick={handleCloseModal} />
 			</DialogActions>
 		</Dialog>
 	);

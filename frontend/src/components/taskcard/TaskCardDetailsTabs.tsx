@@ -4,6 +4,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { Stack } from '@mui/material';
 import { TaskCard } from '.';
+import { TaskLists } from '../taskLists';
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -22,11 +23,7 @@ function CustomTabPanel(props: TabPanelProps) {
 			aria-labelledby={`simple-tab-${index}`}
 			{...other}
 		>
-			{value === index && (
-				<Stack direction={'row'} gap={2}>
-					{children}
-				</Stack>
-			)}
+			{value === index && <>{children}</>}
 		</div>
 	);
 }
@@ -54,7 +51,7 @@ export const TaskCardDetailsTabs = () => {
 				</Tabs>
 			</Box>
 			<CustomTabPanel value={value} index={0}>
-				Related Task items
+				<TaskLists />
 			</CustomTabPanel>
 			<CustomTabPanel value={value} index={1}>
 				Watchers
