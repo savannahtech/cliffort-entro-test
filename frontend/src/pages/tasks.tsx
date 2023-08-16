@@ -1,8 +1,9 @@
 import { Queries, allQueryOptions } from '@/api/queries';
 import CustomButton from '@/components/customs/Button';
 import { TaskCard } from '@/components/taskcard';
+import { TaskDetailsModal } from '@/components/taskcard/TaskDetailsModal';
 import { ITaskFromAPI } from '@/types';
-import { Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { AxiosError } from 'axios';
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
@@ -35,12 +36,35 @@ const Tasks = () => {
 						<CustomButton btnType="tertiary" btnText="New Task" />
 					</Stack>
 					<Stack>
-						<TaskCard />
+						<Box
+							borderRadius={2}
+							borderColor={''}
+							border={1}
+							sx={{
+								cursor: 'pointer',
+							}}
+							padding={2}
+							boxShadow={`0px 4px 6px -2px #10182808`}
+						>
+							<TaskCard />
+						</Box>
 					</Stack>
 					<Stack>
-						<TaskCard />
+						<Box
+							borderRadius={2}
+							borderColor={''}
+							border={1}
+							sx={{
+								cursor: 'pointer',
+							}}
+							padding={2}
+							boxShadow={`0px 4px 6px -2px #10182808`}
+						>
+							<TaskCard />
+						</Box>
 					</Stack>
 				</Stack>
+				{/* <TaskDetailsModal isOpen={true} handleCloseModal={() => console.log('close me ')} /> */}
 			</main>
 		</>
 	);

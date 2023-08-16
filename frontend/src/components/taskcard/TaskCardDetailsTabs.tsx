@@ -3,6 +3,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { Stack } from '@mui/material';
+import { TaskCard } from '.';
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -53,7 +54,7 @@ export const TaskCardDetailsTabs = () => {
 				</Tabs>
 			</Box>
 			<CustomTabPanel value={value} index={0}>
-				Related Tasks Cards
+				Related Task items
 			</CustomTabPanel>
 			<CustomTabPanel value={value} index={1}>
 				Watchers
