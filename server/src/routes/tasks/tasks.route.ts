@@ -8,6 +8,7 @@ const tasksRoutes: Route[] = [
 	['/tasks/:taskId', HttpMethod.Get, controller.getTaskDetails],
 	['/tasks', HttpMethod.Post, controller.createTask],
 	['/tasks/:taskId', HttpMethod.Patch, controller.updateTask],
+	['/tasks/:taskId', HttpMethod.Delete, controller.deleteTask],
 ];
 
 export default tasksRoutes;

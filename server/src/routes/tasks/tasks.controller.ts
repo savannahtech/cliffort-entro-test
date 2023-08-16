@@ -35,4 +35,9 @@ export class TasksController {
 	async updateTask({ payload, params }: RequestData<Task, unknown, TaskIdParam>) {
 		return service.updateTask(params.taskId, payload);
 	}
+
+	@route()
+	async deleteTask({ params }: RequestData<Task, unknown, TaskIdParam>) {
+		return service.deleteTask(params.taskId);
+	}
 }

@@ -108,7 +108,9 @@ export class TasksService {
 			};
 		} catch (error) {
 			return {
-				error: 'Creation failed',
+				error: `Creation failed: ${
+					(typeof error === 'object' && 'message' in error && error.message) || 'An error occurred'
+				}`,
 			};
 		}
 	}
@@ -157,7 +159,37 @@ export class TasksService {
 			};
 		} catch (error) {
 			return {
-				error: 'Update failed',
+				error: `Update failed: ${
+					(typeof error === 'object' && 'message' in error && error.message) || 'An error occurred'
+				}`,
+			};
+		}
+	}
+
+	async deleteTask(taskId: string) {
+		try {
+			const existingTask = await this._prismaClient.task.findUnique({
+				where: { id: taskId },
+			});
+
+			if (!existingTask) {
+				return {
+					error: TASK_NOT_FOUND_MES,
+				};
+			}
+
+			await this._prismaClient.task.delete({
+				where: { id: taskId },
+			});
+
+			return {
+				message: 'Task deleted successfully',
+			};
+		} catch (error) {
+			return {
+				error: `Deletion failed: ${
+					(typeof error === 'object' && 'message' in error && error.message) || 'An error occurred'
+				}`,
 			};
 		}
 	}
