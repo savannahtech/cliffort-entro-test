@@ -24,7 +24,7 @@ model Task {
   assigneeAvatar String?
   status         Status   @default(TODO)
   creationDate   DateTime @default(now())
-  taskId         String?  @db.ObjectId
-  task           Task?    @relation("TasksRelatedTasks", fields: [taskId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  relatedTaskId  String?  @db.ObjectId
+  task           Task?    @relation("TasksRelatedTasks", fields: [relatedTaskId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   relatedTasks   Task[]   @relation("TasksRelatedTasks")
 }

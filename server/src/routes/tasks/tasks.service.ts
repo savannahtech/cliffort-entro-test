@@ -1,4 +1,4 @@
-import { PrismaClient, Status } from '@prisma/client';
+import { PrismaClient, Status, type Task } from '@prisma/client';
 import { TaskListQuery } from './tasks.controller';
 
 export class TasksService {
@@ -43,11 +43,15 @@ export class TasksService {
 				in: transformedStatuses,
 			};
 		}
+
 		const tasks = await this._prismaClient.task.findMany({
 			orderBy: {
 				creationDate: 'desc',
 			},
 			where: this.normalizeFilters(filter),
+			include: {
+				relatedTasks: true,
+			},
 		});
 
 		return { tasks, count: tasks.length };
@@ -79,6 +83,32 @@ export class TasksService {
 			return taskDetails;
 		} catch (e) {
 			return { error: 'Data not found' };
+		}
+	}
+
+	async createTask(payload: Task) {
+		try {
+			await this._prismaClient.task.create({
+				data: {
+					title: payload.title,
+					...(payload.relatedTaskId
+						? {
+								task: {
+									connect: {
+										id: payload.relatedTaskId,
+									},
+								},
+						  }
+						: {}),
+				},
+			});
+			return {
+				message: 'Created successfully',
+			};
+		} catch (error) {
+			return {
+				error: 'Creation failed',
+			};
 		}
 	}
 }
