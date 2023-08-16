@@ -1,5 +1,7 @@
 import Head from 'next/head';
 import { Inter } from 'next/font/google';
+import { Stack, Typography } from '@mui/material';
+import { BiTask } from 'react-icons/bi';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -12,7 +14,10 @@ export default function Home() {
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 			</Head>
 			<main className={inter.className}>
-				<h1>Hello world!!!!</h1>
+				<Stack gap={2} direction={'row'}>
+					<Typography>Hello MUI world</Typography>
+					<BiTask />
+				</Stack>
 			</main>
 		</>
 	);
