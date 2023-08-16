@@ -1,15 +1,9 @@
 import { type Express } from 'express';
-import { HttpMethod, Route } from './types';
 
-const testRoute: Route = [
-	'/hello',
-	HttpMethod.Get,
-	(_, res) => {
-		res.json({ hello: 'World!!' });
-	},
-];
+import { Route } from './types';
+import tasksRoutes from './tasks/tasks.route';
 
-const routes: Route[] = [testRoute];
+const routes: Route[] = [...tasksRoutes];
 
 export function createRoutes(app: Express) {
 	routes.forEach(([path, method, handler]) => {
