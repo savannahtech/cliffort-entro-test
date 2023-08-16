@@ -19,6 +19,7 @@ enum Status {
 model Task {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   title         String
+  description   String?
   status        Status   @default(PENDING)
   creationDate  DateTime @default(now())
   relatedTaskId String?  @db.ObjectId
