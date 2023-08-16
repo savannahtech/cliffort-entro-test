@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
+		"format": "prettier --write \"src/**/*.{ts,tsx}\" --log-level silent",
 		"start": "next start",
 		"lint": "next lint",
 		"lint:fix": "next lint --fix"
