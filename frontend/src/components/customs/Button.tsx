@@ -4,7 +4,7 @@ import React from 'react';
 
 interface Props extends ButtonProps {
 	btnText: string;
-	btnType: CustomButtonTypes;
+	btnType?: CustomButtonTypes;
 }
 
 const CustomButton = ({ btnText, btnType, ...rest }: Props) => {
@@ -28,7 +28,9 @@ const CustomButton = ({ btnText, btnType, ...rest }: Props) => {
 							color: '#475467',
 							borderColor: '#DFE3EB',
 					  }
-					: {}),
+					: {
+							color: '#475467',
+					  }),
 				paddingRight: '25px',
 			}}
 			{...rest}

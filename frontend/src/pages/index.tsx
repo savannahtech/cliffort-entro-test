@@ -1,11 +1,20 @@
 import Head from 'next/head';
 import { Inter } from 'next/font/google';
 import { Stack, Typography } from '@mui/material';
-import { BiTask } from 'react-icons/bi';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { GetServerSideProps } from 'next';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
+	const router = useRouter();
+
+	useEffect(() => {
+		// Redirect to '/tasks' when the component mounts
+		router.push('/tasks');
+	}, []);
+
 	return (
 		<>
 			<Head>
@@ -15,10 +24,18 @@ export default function Home() {
 			</Head>
 			<main className={inter.className}>
 				<Stack gap={2} direction={'row'}>
-					<Typography>Hello MUI world</Typography>
-					<BiTask />
+					<Typography>Home Page</Typography>
 				</Stack>
 			</main>
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+	return {
+		redirect: {
+			destination: '/tasks',
+			permanent: false, // Set to true if the redirection is permanent
+		},
+	};
+};
