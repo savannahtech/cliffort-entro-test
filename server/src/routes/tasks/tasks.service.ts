@@ -127,7 +127,7 @@ export class TasksService {
 				};
 			}
 
-			const { title, status, relatedTaskId } = updatedData;
+			const { title, status, relatedTaskId, assigneeId } = updatedData;
 
 			//TODO: add functionality to update assignee data
 
@@ -148,6 +148,19 @@ export class TasksService {
 						: {
 								task: {
 									disconnect: true, // Handle case where related task is removed
+								},
+						  }),
+					...(assigneeId
+						? {
+								assignee: {
+									connect: {
+										id: assigneeId,
+									},
+								},
+						  }
+						: {
+								assignee: {
+									disconnect: true, // Handle case where assignee task is removed
 								},
 						  }),
 				},

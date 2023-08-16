@@ -17,13 +17,24 @@ enum Status {
 }
 
 model Task {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  title          String
-  assigneeName   String?
-  assigneeAvatar String?
-  status         Status   @default(PENDING)
-  creationDate   DateTime @default(now())
-  relatedTaskId  String?  @db.ObjectId
-  task           Task?    @relation("TasksRelatedTasks", fields: [relatedTaskId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  relatedTasks   Task[]   @relation("TasksRelatedTasks")
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  status        Status   @default(PENDING)
+  creationDate  DateTime @default(now())
+  relatedTaskId String?  @db.ObjectId
+  task          Task?    @relation("TasksRelatedTasks", fields: [relatedTaskId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  relatedTasks  Task[]   @relation("TasksRelatedTasks")
+  userIds       String[] @db.ObjectId
+  watchers      User[]   @relation("TaskWatchers", fields: [userIds], references: [id])
+  assigneeId    String?  @db.ObjectId
+  assignee      User?    @relation(fields: [assigneeId], references: [id])
+}
+
+model User {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  email   String   @unique
+  taskIds String[] @db.ObjectId
+  tasks   Task[]   @relation("TaskWatchers", fields: [taskIds], references: [id])
+  Task    Task[]
 }
