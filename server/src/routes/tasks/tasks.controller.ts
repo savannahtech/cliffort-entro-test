@@ -12,6 +12,11 @@ export interface TaskIdParam {
 	taskId?: string;
 }
 
+export interface DuplicateTaskPayload {
+	title?: string;
+	includeRelatedTask?: boolean;
+}
+
 const service = new TasksService();
 export class TasksController {
 	static _prismaClient = new PrismaClient();
@@ -39,5 +44,10 @@ export class TasksController {
 	@route()
 	async deleteTask({ params }: RequestData<Task, unknown, TaskIdParam>) {
 		return service.deleteTask(params.taskId);
+	}
+
+	@route()
+	async duplicateTask({ params, payload }: RequestData<DuplicateTaskPayload, unknown, TaskIdParam>) {
+		return service.duplicateTask(params.taskId, payload);
 	}
 }

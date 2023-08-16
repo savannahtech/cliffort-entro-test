@@ -1,5 +1,5 @@
 import { PrismaClient, Status, type Task } from '@prisma/client';
-import { TaskListQuery } from './tasks.controller';
+import { DuplicateTaskPayload, TaskListQuery } from './tasks.controller';
 import { TASK_NOT_FOUND_MES } from '../../constants';
 
 export class TasksService {
@@ -188,6 +188,55 @@ export class TasksService {
 		} catch (error) {
 			return {
 				error: `Deletion failed: ${
+					(typeof error === 'object' && 'message' in error && error.message) || 'An error occurred'
+				}`,
+			};
+		}
+	}
+
+	async duplicateTask(taskId: string, payload: DuplicateTaskPayload) {
+		try {
+			const existingTask = await this._prismaClient.task.findUnique({
+				where: { id: taskId },
+			});
+
+			if (!existingTask) {
+				return {
+					error: TASK_NOT_FOUND_MES,
+				};
+			}
+
+			const duplicateData: Partial<Task> = {
+				...existingTask,
+				title: payload?.title || `Copy of ${existingTask.title}`,
+				status: existingTask.status,
+				...(existingTask.relatedTaskId && payload?.includeRelatedTask
+					? {
+							task: {
+								connect: {
+									id: existingTask.relatedTaskId,
+								},
+							},
+					  }
+					: {}),
+			};
+
+			//remove existing id
+			delete duplicateData.id;
+			const duplicatedTask = await this._prismaClient.task.create({
+				data: {
+					title: duplicateData.title,
+					...duplicateData,
+				},
+			});
+
+			return {
+				message: 'Task duplicated successfully',
+				duplicatedTask,
+			};
+		} catch (error) {
+			return {
+				error: `Duplication failed: ${
 					(typeof error === 'object' && 'message' in error && error.message) || 'An error occurred'
 				}`,
 			};
