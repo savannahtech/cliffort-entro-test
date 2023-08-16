@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Status } from '@prisma/client';
 import { TaskListQuery } from './tasks.controller';
 
 export class TasksService {
@@ -7,25 +7,42 @@ export class TasksService {
 	}
 
 	async getTasks(query: TaskListQuery) {
-		const filter: any = {};
+		const filter: Record<'OR' | 'AND' | string, any> = {
+			OR: [],
+			AND: [],
+		};
 
 		if (query.search) {
-			filter.OR = [
-				{
-					title: {
-						contains: query.search,
-						mode: 'insensitive',
+			filter.OR.push(
+				...[
+					{
+						title: {
+							contains: query.search,
+							mode: 'insensitive',
+						},
 					},
-				},
-				{
-					assigneeName: {
-						contains: query.search,
-						mode: 'insensitive',
+					{
+						assigneeName: {
+							contains: query.search,
+							mode: 'insensitive',
+						},
 					},
-				},
-			];
+				],
+			);
 		}
 
+		if (query.status) {
+			const transformedStatuses: Status[] = [];
+			for (const status of query.status) {
+				if (status.toUpperCase() in Status) {
+					transformedStatuses.push(status.toUpperCase() as Status);
+				}
+			}
+
+			filter.status = {
+				in: transformedStatuses,
+			};
+		}
 		const tasks = await this._prismaClient.task.findMany({
 			orderBy: {
 				creationDate: 'desc',

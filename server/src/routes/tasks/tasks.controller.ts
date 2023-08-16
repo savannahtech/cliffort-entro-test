@@ -1,10 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Status } from '@prisma/client';
 import { TasksService } from './tasks.service';
 import { route } from '../../_services/route';
 import { RequestData } from 'src/_services/types';
 
 export interface TaskListQuery {
 	search?: string;
+	status?: Status[];
 }
 
 const service = new TasksService();
