@@ -11,6 +11,7 @@ datasource db {
 }
 
 enum Status {
+  TODO
   PENDING
   IN_PROGRESS
   COMPLETED
@@ -21,7 +22,7 @@ model Task {
   title          String
   assigneeName   String?
   assigneeAvatar String?
-  status         Status   @default(PENDING)
+  status         Status   @default(TODO)
   creationDate   DateTime @default(now())
   taskId         String?  @db.ObjectId
   task           Task?    @relation("TasksRelatedTasks", fields: [taskId], references: [id], onDelete: NoAction, onUpdate: NoAction)
