@@ -78,6 +78,8 @@ export class TasksService {
 				},
 				include: {
 					relatedTasks: true,
+					assignee: true,
+					watchers: true,
 				},
 			});
 
