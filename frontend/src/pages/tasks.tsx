@@ -1,12 +1,24 @@
+import { Queries, allQueryOptions } from '@/api/queries';
 import CustomButton from '@/components/customs/Button';
 import { TaskCard } from '@/components/taskcard';
+import { ITaskFromAPI } from '@/types';
 import { Button, Stack, Typography } from '@mui/material';
+import { AxiosError } from 'axios';
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
+import { useQuery } from 'react-query';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const tasks = () => {
+const Tasks = () => {
+	const {
+		data: allTasks,
+		isLoading: isLoadingTasks,
+		error: tasksFetchingError,
+	} = useQuery<ITaskFromAPI[], AxiosError>('tasks', Queries.getAllTasks, allQueryOptions);
+
+	console.log(allTasks);
+
 	return (
 		<>
 			<Head>
@@ -34,4 +46,4 @@ const tasks = () => {
 	);
 };
 
-export default tasks;
+export default Tasks;
