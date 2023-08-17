@@ -1,8 +1,8 @@
 import { Queries, allQueryOptions } from '@/api/queries';
 import CustomButton from '@/components/customs/Button';
+import { CustomLoader } from '@/components/customs/Loader';
 import { TaskLists } from '@/components/taskLists';
-import { TaskDetailsModal } from '@/components/taskcard/TaskDetailsModal';
-import { ITaskFromAPI } from '@/types';
+import { TaskListType } from '@/types';
 import { Stack, Typography } from '@mui/material';
 import { AxiosError } from 'axios';
 import { Inter } from 'next/font/google';
@@ -16,9 +16,7 @@ const Tasks = () => {
 		data: allTasks,
 		isLoading: isLoadingTasks,
 		error: tasksFetchingError,
-	} = useQuery<ITaskFromAPI[], AxiosError>('tasks', Queries.getAllTasks, allQueryOptions);
-
-	console.log(allTasks);
+	} = useQuery<TaskListType, AxiosError>('tasks', Queries.getAllTasks, allQueryOptions);
 
 	return (
 		<>
@@ -35,9 +33,10 @@ const Tasks = () => {
 						</Typography>
 						<CustomButton btnType="tertiary" btnText="New Task" />
 					</Stack>
-					<TaskLists />
+					<CustomLoader loading={isLoadingTasks} />
+					{allTasks && allTasks.length ? <TaskLists taskLists={allTasks} /> : null}
+					{}
 				</Stack>
-				{/* <TaskDetailsModal isOpen={true} handleCloseModal={() => console.log('close me ')} /> */}
 			</main>
 		</>
 	);

@@ -28,7 +28,7 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal }: Props) => {
 		>
 			<DialogTitle id="task-details-modal">Task Title</DialogTitle>
 			<DialogContent dividers={true}>
-				<TaskCard />
+				<TaskCard data={{}} isShowStatusIndicator={false} />
 				<Stack mt={2}>
 					<Divider />
 				</Stack>

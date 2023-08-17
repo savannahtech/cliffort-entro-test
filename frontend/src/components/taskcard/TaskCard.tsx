@@ -2,10 +2,17 @@ import { Avatar, Box, Divider, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { BiTask } from 'react-icons/bi';
 import { BsDot } from 'react-icons/bs';
-import { stringAvatar, stringToColor } from '@/utils';
+import { formatDateToDisplay, stringAvatar, stringToColor } from '@/utils';
 import { StatusIndicator } from './StatusIndicator';
+import { ITaskFromAPI } from '@/types';
 
-export const TaskCard = () => {
+interface Props {
+	data: ITaskFromAPI;
+	isShowStatusIndicator?: boolean;
+}
+
+export const TaskCard = ({ data, isShowStatusIndicator = true }: Props) => {
+	const { title, status, creationDate } = data;
 	return (
 		<Stack justifyContent={'space-between'} direction={'row'} width={'98%'}>
 			<Stack direction={'row'} gap={2} alignItems={'center'}>
@@ -17,7 +24,7 @@ export const TaskCard = () => {
 					}}
 				/>
 				<Stack direction={'column'}>
-					<Typography variant="h6">Task Title</Typography>
+					<Typography variant="h6">{title}</Typography>
 					<Stack direction={'row'} color={'#98A2B3'} fontWeight={'600'} alignItems={'center'} gap={0.5}>
 						<Stack direction={'row'} gap={0.25} alignItems={'center'}>
 							<Avatar
@@ -29,15 +36,17 @@ export const TaskCard = () => {
 
 						<BsDot />
 						<Typography variant="body2" fontWeight={'500'}>
-							10 September,2023
+							{formatDateToDisplay(creationDate)}
 						</Typography>
 					</Stack>
 				</Stack>
 			</Stack>
-			<Stack direction={'row'} alignItems={'center'} gap={2}>
-				<Divider orientation="vertical" variant="middle" />
-				<StatusIndicator status="IN_PROGRESS" />
-			</Stack>
+			{isShowStatusIndicator && (
+				<Stack direction={'row'} alignItems={'center'} gap={2}>
+					<Divider orientation="vertical" variant="middle" />
+					<StatusIndicator status={status} />
+				</Stack>
+			)}
 		</Stack>
 	);
 };

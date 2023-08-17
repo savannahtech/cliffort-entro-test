@@ -7,7 +7,7 @@ export const Queries = {
 	getAllTasks: async () => {
 		const response = await API.get('/tasks');
 		console.log(response.data);
-		return response.data.data;
+		return response.data.data.tasks;
 	},
 };
 

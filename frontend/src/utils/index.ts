@@ -26,3 +26,17 @@ export function stringAvatar(name: string) {
 		children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
 	};
 }
+
+export function formatDateToDisplay(date: Date) {
+	const options: Intl.DateTimeFormatOptions = {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+		hour12: false, // Use 24-hour format
+	};
+
+	return new Intl.DateTimeFormat('en-US', options).format(new Date(date));
+}

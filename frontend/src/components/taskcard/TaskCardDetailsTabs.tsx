@@ -51,7 +51,7 @@ export const TaskCardDetailsTabs = () => {
 				</Tabs>
 			</Box>
 			<CustomTabPanel value={value} index={0}>
-				<TaskLists />
+				<TaskLists taskLists={[]} />
 			</CustomTabPanel>
 			<CustomTabPanel value={value} index={1}>
 				Watchers
