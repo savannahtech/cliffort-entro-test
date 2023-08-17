@@ -15,53 +15,58 @@ interface Props {
 }
 
 export const InitialForm = ({ handleFormValueChange, formValues }: Props) => {
-	const { data: allUsers, error: usersFetchingError } = useQuery<IAssignee[], AxiosError>(
-		'users',
-		Queries.getAllUsers,
-		allQueryOptions,
-	);
+	const {
+		data: allUsers,
+		error: usersFetchingError,
+		isLoading: isLoadingUsers,
+	} = useQuery<IAssignee[], AxiosError>('users', Queries.getAllUsers, allQueryOptions);
 
 	if (usersFetchingError) {
 		toast.error(usersFetchingError.message || FAILED_TO_FETCH_MESSAGE);
 	}
 
 	return (
-		<Stack direction={'row'} gap={2} alignItems={'center'} justifyContent={'space-between'}>
-			<Stack direction={'row'} gap={2} alignItems={'center'} width={'60%'}>
-				<MdAddTask
-					style={{
-						width: 50,
-						height: 50,
-						color: '#98A2B3',
+		<>
+			<Stack direction={'row'} gap={2} alignItems={'center'} justifyContent={'space-between'}>
+				<Stack direction={'row'} gap={2} alignItems={'center'} width={'60%'}>
+					<MdAddTask
+						style={{
+							width: 50,
+							height: 50,
+							color: '#98A2B3',
+						}}
+					/>
+					<TextField
+						id="task-title"
+						label="Task Title"
+						variant="standard"
+						fullWidth
+						name="title"
+						onChange={(e) => {
+							handleFormValueChange('title', e.target.value);
+						}}
+						value={formValues.title}
+					/>
+				</Stack>
+				<Autocomplete
+					disablePortal
+					id="assignee"
+					options={
+						allUsers?.map((item) => ({
+							label: item.name,
+							id: item.id,
+						})) || []
+					}
+					sx={{ width: 300 }}
+					renderInput={(params) => <TextField {...params} label="Assignee" variant="standard" />}
+					onChange={(_e, newValue) => {
+						handleFormValueChange('assigneeName', newValue?.label);
 					}}
-				/>
-				<TextField
-					id="task-title"
-					label="Task Title"
-					variant="standard"
-					fullWidth
-					name="title"
-					onChange={(e) => {
-						handleFormValueChange('title', e.target.value);
-					}}
-					value={formValues.title}
 				/>
 			</Stack>
-			<Autocomplete
-				disablePortal
-				id="assignee"
-				options={
-					allUsers?.map((item) => ({
-						label: item.name,
-						id: item.id,
-					})) || []
-				}
-				sx={{ width: 300 }}
-				renderInput={(params) => <TextField {...params} label="Assignee" variant="standard" />}
-				onChange={(_e, newValue) => {
-					handleFormValueChange('assigneeName', newValue?.label);
-				}}
-			/>
-		</Stack>
+			<Stack mt={2}>
+				<CustomLoader loading={isLoadingUsers} height={'20%'} text="Loading Assingees Data..." width={'100%'} />
+			</Stack>
+		</>
 	);
 };

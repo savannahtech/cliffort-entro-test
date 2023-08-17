@@ -5,14 +5,11 @@ import React, { useState } from 'react';
 import CustomButton from '../customs/Button';
 import { InitialForm } from './InitialForm';
 import { MoreOptionalDetailsForm } from './MoreOptionalDetailsForm';
-import { ICreateEditTaskFormValues } from '@/types';
+import { ICommonModalProps, ICreateEditTaskFormValues } from '@/types';
 
 const inter = Inter({ subsets: ['latin'] });
 
-interface Props {
-	isOpen: boolean;
-	handleCloseModal: () => void;
-}
+interface Props extends ICommonModalProps {}
 
 export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal }: Props) => {
 	const [isShowMoreDetailsForm, setIsShowMoreDetailsForm] = useState(false);
@@ -20,7 +17,7 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal }: Props) => 
 		title: '',
 		assigneeName: '',
 		description: '',
-		relatedTask: null,
+		relatedTask: undefined,
 	});
 
 	const toggleIsShowMoreDetailsForm = () => {
@@ -42,14 +39,14 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal }: Props) => 
 		<Dialog
 			open={isOpen}
 			onClose={handleCloseModal}
-			aria-labelledby="task-details-modal"
-			aria-describedby="scroll-dialog-description"
+			aria-labelledby="create-task-modal"
+			aria-describedby="create-task-modal-description"
 			maxWidth="lg"
 			className={inter.className}
 		>
-			<DialogTitle id="task-details-modal">Create New Task</DialogTitle>
+			<DialogTitle id="create-task-modal">Create New Task</DialogTitle>
 			<DialogContent dividers={true}>
-				<Box width="60vw">
+				<Box width="60vw" minHeight={300}>
 					<InitialForm formValues={formValues} handleFormValueChange={handleFormValueChange} />
 					{isShowMoreDetailsForm ? (
 						<MoreOptionalDetailsForm formValues={formValues} handleFormValueChange={handleFormValueChange} />
@@ -60,7 +57,10 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal }: Props) => 
 				<CustomButton
 					btnText={isShowMoreDetailsForm ? 'Back' : 'Next'}
 					btnType="primary"
-					onClick={toggleIsShowMoreDetailsForm}
+					onClick={() => {
+						// TODO: add some validation before show the more optional details form
+						toggleIsShowMoreDetailsForm();
+					}}
 				/>
 				<CustomButton btnText="Finish" btnType="tertiary" onClick={handleCreateTask} />
 			</DialogActions>

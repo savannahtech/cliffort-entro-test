@@ -1,26 +1,19 @@
-import { Queries, allQueryOptions } from '@/api/queries';
 import { CreateEditTaskFormModal } from '@/components/createEditTaskFormModal';
 import CustomButton from '@/components/customs/Button';
 import { CustomLoader } from '@/components/customs/Loader';
 import { TaskLists } from '@/components/taskLists';
 import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
-import { TaskListType } from '@/types';
+import { useGetAllTaskData } from '@/hooks';
 import { Stack, Typography } from '@mui/material';
-import { AxiosError } from 'axios';
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 
 const inter = Inter({ subsets: ['latin'] });
 
 const Tasks = () => {
-	const {
-		data: allTasks,
-		isLoading: isLoadingTasks,
-		error: tasksFetchingError,
-	} = useQuery<TaskListType, AxiosError>('tasks', Queries.getAllTasks, allQueryOptions);
+	const { allTasks, isLoadingTasks, tasksFetchingError } = useGetAllTaskData();
 	const [isOpenCreateEditTaskForm, setIsOpenCreateEditTaskForm] = useState(false);
 
 	if (tasksFetchingError) {

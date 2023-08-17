@@ -8,7 +8,7 @@ import { Divider, Stack, Typography, Chip, Box } from '@mui/material';
 import { GrAdd } from 'react-icons/gr';
 import { TaskCardDetailsTabs } from './TaskCardDetailsTabs';
 import { Inter } from 'next/font/google';
-import { ITaskFromAPI } from '@/types';
+import { ICommonModalProps, ITaskFromAPI } from '@/types';
 import { Queries, allQueryOptions } from '@/api/queries';
 import { useQuery } from 'react-query';
 import { AxiosError } from 'axios';
@@ -19,9 +19,7 @@ import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
 
 const inter = Inter({ subsets: ['latin'] });
 
-interface Props {
-	isOpen: boolean;
-	handleCloseModal: () => void;
+interface Props extends ICommonModalProps {
 	taskId: string;
 }
 

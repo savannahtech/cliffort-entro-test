@@ -24,5 +24,12 @@ export interface ICreateEditTaskFormValues {
 	title: string;
 	assigneeName: string;
 	description: string;
-	relatedTask: string | null;
+	relatedTask: RelatedTaskType;
 }
+
+interface ICommonModalProps {
+	isOpen: boolean;
+	handleCloseModal: () => void;
+}
+
+export type RelatedTaskType = Omit<ITaskFromAPI, 'relatedTasks' | 'description' | 'watchers'> | undefined;

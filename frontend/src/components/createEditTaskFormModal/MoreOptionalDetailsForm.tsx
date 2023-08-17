@@ -1,8 +1,10 @@
 import { Stack, Divider, Typography, Box, TextField } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import CustomButton from '../customs/Button';
 import { GrAdd } from 'react-icons/gr';
 import { ICreateEditTaskFormValues } from '@/types';
+import { LinkToOtherTaskModal } from '../linkToOtherTaskModal';
+import { TaskCard } from '../taskcard';
 
 interface Props {
 	handleFormValueChange: (fieldName: keyof ICreateEditTaskFormValues, value: any) => void;
@@ -10,6 +12,10 @@ interface Props {
 }
 
 export const MoreOptionalDetailsForm = ({ handleFormValueChange, formValues }: Props) => {
+	const [isOpenLinkToParentTaskModal, setIsOpenLinkToParentTaskModal] = useState(false);
+	const toggleLinkToParentTaskModal = () => {
+		setIsOpenLinkToParentTaskModal((prev) => !prev);
+	};
 	return (
 		<>
 			<Stack mt={2}>
@@ -41,13 +47,38 @@ export const MoreOptionalDetailsForm = ({ handleFormValueChange, formValues }: P
 				</Box>
 				<Stack direction={'row'} mt={2}>
 					<Typography variant="subtitle1" pb={1} borderBottom={'2px solid grey'}>
-						Related Tasks
+						Related Task
 					</Typography>
 				</Stack>
+				{formValues.relatedTask && (
+					<Stack direction={'row'} mt={2} width={'100%'}>
+						<Box
+							borderRadius={2}
+							border={'1px solid #10182808'}
+							padding={2}
+							boxShadow={`0px 4px 6px -2px #10182808`}
+							width={'100%'}
+						>
+							<TaskCard data={formValues.relatedTask} />
+						</Box>
+					</Stack>
+				)}
 				<Stack direction={'row'} mt={2}>
-					<CustomButton btnText="Link to other tabs" variant="text" startIcon={<GrAdd />} />
+					<CustomButton
+						btnText="Link to a parent task"
+						variant="text"
+						startIcon={<GrAdd />}
+						onClick={toggleLinkToParentTaskModal}
+					/>
 				</Stack>
 			</Stack>
+			<LinkToOtherTaskModal
+				isOpen={isOpenLinkToParentTaskModal}
+				handleCloseModal={toggleLinkToParentTaskModal}
+				getSelectedTask={(relatedTask) => {
+					handleFormValueChange('relatedTask', relatedTask);
+				}}
+			/>
 		</>
 	);
 };
