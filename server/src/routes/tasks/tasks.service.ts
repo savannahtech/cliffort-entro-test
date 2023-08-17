@@ -58,18 +58,6 @@ export class TasksService {
 		return { tasks, count: tasks.length };
 	}
 
-	private normalizeFilters(filter: Record<string, any>): Record<string, any> {
-		const updatedFilter = { ...filter };
-		const keys = Object.keys(filter);
-		keys.forEach((key) => {
-			if (Array.isArray(filter[key]) && filter[key].length === 0) {
-				delete updatedFilter[key];
-			}
-		});
-
-		return updatedFilter;
-	}
-
 	async getTaskDetails(taskId?: string) {
 		try {
 			const taskDetails = await this._prismaClient.task.findUnique({
@@ -99,6 +87,15 @@ export class TasksService {
 								task: {
 									connect: {
 										id: payload.relatedTaskId,
+									},
+								},
+						  }
+						: {}),
+					...(payload.assigneeId
+						? {
+								assignee: {
+									connect: {
+										id: payload.assigneeId,
 									},
 								},
 						  }
@@ -256,5 +253,17 @@ export class TasksService {
 				}`,
 			};
 		}
+	}
+
+	private normalizeFilters(filter: Record<string, any>): Record<string, any> {
+		const updatedFilter = { ...filter };
+		const keys = Object.keys(filter);
+		keys.forEach((key) => {
+			if (Array.isArray(filter[key]) && filter[key].length === 0) {
+				delete updatedFilter[key];
+			}
+		});
+
+		return updatedFilter;
 	}
 }
