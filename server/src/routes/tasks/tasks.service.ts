@@ -51,7 +51,7 @@ export class TasksService {
 			},
 			where: this.normalizeFilters(filter),
 			include: {
-				relatedTasks: true,
+				assignee: true,
 			},
 		});
 
