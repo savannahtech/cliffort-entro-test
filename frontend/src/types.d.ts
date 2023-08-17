@@ -18,3 +18,10 @@ export interface ITaskFromAPI {
 }
 
 export type TaskListType = Omit<ITaskFromAPI, 'relatedTasks' | 'description' | 'watchers'>[];
+
+export interface ICreateEditTaskFormValues {
+	title: string;
+	assigneeName: string;
+	description: string;
+	relatedTask: string | null;
+}

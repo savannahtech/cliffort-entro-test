@@ -14,7 +14,6 @@ interface Props {
 export const TaskCard = ({ data, isShowStatusIndicator = true }: Props) => {
 	const { title, status, creationDate, assignee } = data;
 
-	console.log({ assignee });
 	return (
 		<Stack justifyContent={'space-between'} direction={'row'} width={'98%'}>
 			<Stack direction={'row'} gap={2} alignItems={'center'}>
