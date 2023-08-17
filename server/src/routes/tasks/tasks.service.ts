@@ -23,9 +23,11 @@ export class TasksService {
 						},
 					},
 					{
-						assigneeName: {
-							contains: query.search,
-							mode: 'insensitive',
+						assignee: {
+							name: {
+								contains: query.search,
+								mode: 'insensitive',
+							},
 						},
 					},
 				],
