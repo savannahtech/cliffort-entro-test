@@ -1,4 +1,5 @@
 import { Queries, allQueryOptions } from '@/api/queries';
+import { CreateEditTaskFormModal } from '@/components/createEditTaskFormModal';
 import CustomButton from '@/components/customs/Button';
 import { CustomLoader } from '@/components/customs/Loader';
 import { TaskLists } from '@/components/taskLists';
@@ -8,6 +9,7 @@ import { Stack, Typography } from '@mui/material';
 import { AxiosError } from 'axios';
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -19,10 +21,15 @@ const Tasks = () => {
 		isLoading: isLoadingTasks,
 		error: tasksFetchingError,
 	} = useQuery<TaskListType, AxiosError>('tasks', Queries.getAllTasks, allQueryOptions);
+	const [isOpenCreateEditTaskForm, setIsOpenCreateEditTaskForm] = useState(false);
 
 	if (tasksFetchingError) {
 		toast.error(tasksFetchingError.message || FAILED_TO_FETCH_MESSAGE);
 	}
+
+	const toggleShowCreatEditTaskForm = () => {
+		setIsOpenCreateEditTaskForm((prev) => !prev);
+	};
 
 	return (
 		<>
@@ -37,13 +44,14 @@ const Tasks = () => {
 						<Typography variant="h5" fontSize={22} fontWeight={'600'}>
 							Tasks
 						</Typography>
-						<CustomButton btnType="tertiary" btnText="New Task" />
+						<CustomButton btnType="tertiary" btnText="New Task" onClick={toggleShowCreatEditTaskForm} />
 					</Stack>
 					<CustomLoader loading={isLoadingTasks} />
 					{allTasks && allTasks.length ? <TaskLists taskLists={allTasks} /> : null}
 					{}
 				</Stack>
 			</main>
+			<CreateEditTaskFormModal isOpen={isOpenCreateEditTaskForm} handleCloseModal={toggleShowCreatEditTaskForm} />
 		</>
 	);
 };
