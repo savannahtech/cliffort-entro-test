@@ -1,4 +1,4 @@
-# Tasks management frontend
+# Tasks management backend
 ## Requirements
 
 node versions `>=16.0.0`
