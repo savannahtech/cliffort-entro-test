@@ -2,9 +2,11 @@ import { CreateEditTaskFormModal } from '@/components/createEditTaskFormModal';
 import { CustomButton } from '@/components/customs';
 import { CustomMultiSelectInput } from '@/components/customs';
 import { CustomLoader } from '@/components/customs';
+import { EmptyTaskList } from '@/components/emptyTaskList';
 import { TaskLists } from '@/components/taskLists';
 import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
 import { useGetAllTaskData } from '@/hooks';
+import { TaskListQuery } from '@/types';
 import { Box, IconButton, Stack, TextField, Typography } from '@mui/material';
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
@@ -16,9 +18,16 @@ import { toast } from 'react-toastify';
 const inter = Inter({ subsets: ['latin'] });
 
 const Tasks = () => {
-	const { allTasks, isLoadingTasks, tasksFetchingError, refetchAllTasks } = useGetAllTaskData();
 	const [isOpenCreateEditTaskForm, setIsOpenCreateEditTaskForm] = useState(false);
 	const [isShowFilters, setIsShowFilters] = useState(false);
+	const [filterValues, setFilterValues] = useState<TaskListQuery | null>(null);
+	const { allTasks, isLoadingTasks, tasksFetchingError, refetchAllTasks } = useGetAllTaskData(filterValues);
+
+	const handleFiltering = (fieldName: keyof TaskListQuery, value: any) => {
+		setFilterValues({
+			[fieldName]: value,
+		});
+	};
 
 	if (tasksFetchingError) {
 		toast.error(tasksFetchingError.message || FAILED_TO_FETCH_MESSAGE);
@@ -49,7 +58,7 @@ const Tasks = () => {
 						<CustomButton
 							startIcon={<BiFilterAlt />}
 							btnType="primary"
-							btnText="Filter"
+							btnText="Filters"
 							onClick={toggleIsShowFilters}
 						/>
 					</Stack>
@@ -62,22 +71,27 @@ const Tasks = () => {
 										size="small"
 										fullWidth
 										placeholder="Filter by title and assignee name"
+										onChange={(e) => {
+											handleFiltering('search', e.target.value);
+										}}
+										value={filterValues?.search || ''}
 									/>
 									<CustomMultiSelectInput
 										size="small"
 										label="Statuses"
 										options={['PENDING', 'IN PROGRESS', 'COMPLETED']}
-										getValue={(value) => console.log(value)}
+										getValue={(value) => {
+											handleFiltering('status', value);
+										}}
+										value={filterValues?.status || []}
 									/>
+									<CustomButton btnType="primary" btnText="Clear" onClick={() => setFilterValues(null)} />
 								</Stack>
 							</Box>
-							<IconButton onClick={toggleIsShowFilters}>
-								<GrClose />
-							</IconButton>
 						</Stack>
 					)}
 					<CustomLoader key={`${isLoadingTasks}`} loading={isLoadingTasks} />
-					{allTasks && allTasks.length ? <TaskLists taskLists={allTasks} /> : null}
+					{allTasks && allTasks.length ? <TaskLists taskLists={allTasks} /> : <EmptyTaskList />}
 				</Stack>
 			</main>
 			<CreateEditTaskFormModal

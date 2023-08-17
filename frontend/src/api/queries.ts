@@ -2,10 +2,13 @@
 
 import { AxiosError } from 'axios';
 import { API } from './http-common';
+import { TaskListQuery } from '@/types';
 
 export const Queries = {
-	getAllTasks: async () => {
-		const response = await API.get('/tasks');
+	getAllTasks: async (queryParams?: TaskListQuery) => {
+		const response = await API.get('/tasks', {
+			params: queryParams,
+		});
 		return response.data.data.tasks;
 	},
 

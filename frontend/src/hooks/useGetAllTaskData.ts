@@ -1,15 +1,23 @@
 import { Queries, allQueryOptions } from '@/api/queries';
-import { TaskListType } from '@/types';
+import { Status, TaskListQuery, TaskListType } from '@/types';
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 
-export const useGetAllTaskData = () => {
+export const useGetAllTaskData = (queryParams?: TaskListQuery | null) => {
 	const {
 		data: allTasks,
 		isLoading: isLoadingTasks,
 		error: tasksFetchingError,
 		refetch,
-	} = useQuery<TaskListType, AxiosError>('tasks', Queries.getAllTasks, allQueryOptions);
+	} = useQuery<TaskListType, AxiosError>(
+		['tasks', queryParams],
+		() =>
+			Queries.getAllTasks({
+				...queryParams,
+				status: queryParams?.status?.map((item) => item.replace(' ', '_')) as Status[],
+			}),
+		allQueryOptions,
+	);
 
 	return {
 		allTasks,

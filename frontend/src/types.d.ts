@@ -38,5 +38,9 @@ export interface ICreateTaskPayload {
 	title: string;
 	assigneeId?: string;
 	description?: string;
-  relatedTaskId?:string;
+	relatedTaskId?: string;
+}
+export interface TaskListQuery {
+	search?: string;
+	status?: Status[];
 }
