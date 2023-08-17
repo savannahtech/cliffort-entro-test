@@ -47,6 +47,7 @@ const Tasks = () => {
 				isOpen={isOpenCreateEditTaskForm}
 				handleCloseModal={toggleShowCreatEditTaskForm}
 				refetchAllTasks={refetchAllTasks}
+				key={`${isOpenCreateEditTaskForm}`}
 			/>
 		</>
 	);

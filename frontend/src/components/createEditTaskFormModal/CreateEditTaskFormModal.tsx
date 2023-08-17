@@ -56,7 +56,7 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTa
 	};
 
 	const handleCreateTask = () => {
-		//TODO: add validations before saving
+		// add validations before saving
 		if (!formValues.title) {
 			toast.error('Please add a task title');
 			return;
@@ -95,6 +95,10 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTa
 					btnType="primary"
 					onClick={() => {
 						// TODO: add some validation before show the more optional details form
+						if (!isShowMoreDetailsForm && !formValues.title) {
+							toast.error('Please add a task title');
+							return;
+						}
 						toggleIsShowMoreDetailsForm();
 					}}
 				/>

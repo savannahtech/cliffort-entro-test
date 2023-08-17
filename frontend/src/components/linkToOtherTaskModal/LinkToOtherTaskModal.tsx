@@ -1,5 +1,5 @@
 import { useGetAllTaskData } from '@/hooks';
-import { ICommonModalProps, ITaskFromAPI, RelatedTaskType } from '@/types';
+import { ICommonModalProps, RelatedTaskType } from '@/types';
 import { Autocomplete, Box, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { Inter } from 'next/font/google';
 import React, { useState } from 'react';
@@ -37,7 +37,7 @@ export const LinkToOtherTaskModal = ({ isOpen, handleCloseModal, getSelectedTask
 		>
 			<DialogTitle id="create-task-modal">Link Task to Existing Task</DialogTitle>
 			<DialogContent dividers={true}>
-				<Box width="50vw">
+				<Box width="50vw" minHeight={'250px'}>
 					<Autocomplete
 						disablePortal
 						id="relatedTask"
@@ -47,7 +47,6 @@ export const LinkToOtherTaskModal = ({ isOpen, handleCloseModal, getSelectedTask
 								id: item.id,
 							})) || []
 						}
-						sx={{ width: 250 }}
 						renderInput={(params) => <TextField {...params} label="Existing Task" variant="standard" />}
 						onChange={(_e, newValue) => {
 							const selectedTask = allTasks?.find((item) => item.id === newValue?.id);

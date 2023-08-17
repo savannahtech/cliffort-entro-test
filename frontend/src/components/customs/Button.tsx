@@ -36,7 +36,7 @@ const CustomButton = ({ btnText, btnType, isLoading, ...rest }: Props) => {
 			}}
 			{...rest}
 		>
-			{isLoading ? <CircularProgress size={'12px'} /> : <Typography textTransform={'none'}>{btnText}</Typography>}
+			{isLoading ? <CircularProgress size={'16px'} /> : <Typography textTransform={'none'}>{btnText}</Typography>}
 		</Button>
 	);
 };
