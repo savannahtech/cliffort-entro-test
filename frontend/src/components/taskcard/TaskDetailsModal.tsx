@@ -8,15 +8,40 @@ import { Divider, Stack, Typography, Chip, Box } from '@mui/material';
 import { GrAdd } from 'react-icons/gr';
 import { TaskCardDetailsTabs } from './TaskCardDetailsTabs';
 import { Inter } from 'next/font/google';
+import { ITaskFromAPI } from '@/types';
+import { Queries, allQueryOptions } from '@/api/queries';
+import { useQuery } from 'react-query';
+import { AxiosError } from 'axios';
+import { CustomLoader } from '../customs/Loader';
+import { toast } from 'react-toastify';
+import { formatDateToDisplay } from '@/utils';
+import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
 
 const inter = Inter({ subsets: ['latin'] });
 
 interface Props {
 	isOpen: boolean;
 	handleCloseModal: () => void;
+	taskId: string;
 }
 
-export const TaskDetailsModal = ({ isOpen, handleCloseModal }: Props) => {
+export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) => {
+	const {
+		data: taskDetails,
+		isLoading: isLoadingTaskDetails,
+		error: taskDetailsFetchingError,
+	} = useQuery<ITaskFromAPI, AxiosError>(
+		['task-details', taskId],
+		() => Queries.getTaskDetails(taskId),
+		allQueryOptions,
+	);
+
+	console.log({ taskId });
+
+	if (taskDetailsFetchingError) {
+		toast.error(taskDetailsFetchingError.message || FAILED_TO_FETCH_MESSAGE);
+	}
+
 	return (
 		<Dialog
 			open={isOpen}
@@ -26,48 +51,63 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal }: Props) => {
 			maxWidth="lg"
 			className={inter.className}
 		>
-			<DialogTitle id="task-details-modal">Task Title</DialogTitle>
+			<DialogTitle id="task-details-modal">Task Details</DialogTitle>
 			<DialogContent dividers={true}>
-				<TaskCard data={{}} isShowStatusIndicator={false} />
+				<CustomLoader loading={isLoadingTaskDetails} width={'60vh'} />
+				{!!taskDetails && (
+					<TaskCard
+						data={{
+							id: taskDetails.id,
+							title: taskDetails.title,
+							assignee: taskDetails.assignee,
+							creationDate: taskDetails.creationDate,
+							status: taskDetails.status,
+						}}
+						isShowStatusIndicator={false}
+					/>
+				)}
 				<Stack mt={2}>
 					<Divider />
 				</Stack>
-				<Stack p={3} pt={4}>
-					<Stack direction={'row'} columnGap={10}>
-						<Stack gap={1}>
-							<Typography>Status</Typography>
-							<Chip label="Chip Filled" />
+				{taskDetails ? (
+					<Stack p={3} pt={4}>
+						<Stack direction={'row'} columnGap={10}>
+							<Stack gap={1}>
+								<Typography>Status</Typography>
+								<Chip label={taskDetails?.status} />
+							</Stack>
+							<Stack gap={1}>
+								<Typography>Date created</Typography>
+								<Chip label={formatDateToDisplay(taskDetails.creationDate)} />
+							</Stack>
+							<Stack gap={1}>
+								<Typography>Assignee</Typography>
+								<Chip label={taskDetails.assignee.name || 'Unassigned'} />
+							</Stack>
 						</Stack>
-						<Stack gap={1}>
-							<Typography>Status</Typography>
-							<Chip label="Chip Filled" />
+						<Stack gap={1} mt={3.5}>
+							<Typography>Description</Typography>
+							<Box
+								sx={{
+									bgcolor: '#EEF2F8',
+								}}
+								p={3}
+								paddingBottom={5}
+								borderRadius={2}
+							>
+								{taskDetails?.description || ''}
+							</Box>
 						</Stack>
-						<Stack gap={1}>
-							<Typography>Status</Typography>
-							<Chip label="Chip Filled" />
+						<Stack mt={5}>
+							<TaskCardDetailsTabs relatedTasks={taskDetails.relatedTasks} />
+						</Stack>
+						<Stack direction={'row'} mt={2}>
+							<CustomButton btnText="Link to other tabs" variant="text" startIcon={<GrAdd />} />
 						</Stack>
 					</Stack>
-					<Stack gap={1} mt={3.5}>
-						<Typography>Description</Typography>
-						<Box
-							sx={{
-								bgcolor: '#EEF2F8',
-							}}
-							p={3}
-							paddingBottom={5}
-							borderRadius={2}
-						>
-							To live is to risk it all. Otherwise {"you're"} just an inert chunk of randomly assembled molecules
-							drifting wherever the universe blows you.
-						</Box>
-					</Stack>
-					<Stack mt={5}>
-						<TaskCardDetailsTabs />
-					</Stack>
-					<Stack direction={'row'} mt={2}>
-						<CustomButton btnText="Link to other tabs" variant="text" startIcon={<GrAdd />} />
-					</Stack>
-				</Stack>
+				) : (
+					'No details'
+				)}
 			</DialogContent>
 			<DialogActions>
 				<CustomButton btnText="Close" btnType="primary" onClick={handleCloseModal} />

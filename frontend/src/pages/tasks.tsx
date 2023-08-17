@@ -2,12 +2,14 @@ import { Queries, allQueryOptions } from '@/api/queries';
 import CustomButton from '@/components/customs/Button';
 import { CustomLoader } from '@/components/customs/Loader';
 import { TaskLists } from '@/components/taskLists';
+import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
 import { TaskListType } from '@/types';
 import { Stack, Typography } from '@mui/material';
 import { AxiosError } from 'axios';
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
+import { toast } from 'react-toastify';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,6 +19,10 @@ const Tasks = () => {
 		isLoading: isLoadingTasks,
 		error: tasksFetchingError,
 	} = useQuery<TaskListType, AxiosError>('tasks', Queries.getAllTasks, allQueryOptions);
+
+	if (tasksFetchingError) {
+		toast.error(tasksFetchingError.message || FAILED_TO_FETCH_MESSAGE);
+	}
 
 	return (
 		<>

@@ -9,6 +9,12 @@ export const Queries = {
 		console.log(response.data);
 		return response.data.data.tasks;
 	},
+
+	getTaskDetails: async (taskId: string) => {
+		console.log(taskId);
+		const response = await API.get(`/tasks/${taskId}`);
+		return response.data.data;
+	},
 };
 
 export const allQueryOptions = {

@@ -5,3 +5,5 @@ export const statusBgColors: Record<Status, string> = {
 	IN_PROGRESS: '#1567ff',
 	PENDING: '#ffd800',
 } as const;
+
+export const FAILED_TO_FETCH_MESSAGE = 'Failed to fetch data';

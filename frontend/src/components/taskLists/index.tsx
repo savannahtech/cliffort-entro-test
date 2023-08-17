@@ -4,6 +4,7 @@ import { TaskCard } from '../taskcard';
 import { TaskDetailsModal } from '../taskcard/TaskDetailsModal';
 import { TaskListType } from '@/types';
 import { EmptyTaskList } from '../emptyTaskList';
+import { toast } from 'react-toastify';
 
 interface Props {
 	taskLists: TaskListType;
@@ -11,14 +12,16 @@ interface Props {
 
 export const TaskLists = ({ taskLists }: Props) => {
 	const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
+	const [currentTaskId, setCurrentTaskId] = useState('');
 
 	const toggleShowTaskDetailsModal = () => {
 		setIsOpenDetailsModal((prev) => !prev);
 	};
 
-	const handleTaskCardClick = () => {
+	const handleTaskCardClick = (taskId: string) => {
 		// todo: add details
 		toggleShowTaskDetailsModal();
+		setCurrentTaskId(taskId);
 	};
 	return (
 		<>
@@ -36,7 +39,7 @@ export const TaskLists = ({ taskLists }: Props) => {
 								}}
 								padding={2}
 								boxShadow={`0px 4px 6px -2px #10182808`}
-								onClick={handleTaskCardClick}
+								onClick={() => handleTaskCardClick(task.id)}
 							>
 								<TaskCard data={task} />
 							</Box>
@@ -44,7 +47,13 @@ export const TaskLists = ({ taskLists }: Props) => {
 					))
 				)}
 			</Stack>
-			<TaskDetailsModal isOpen={isOpenDetailsModal} handleCloseModal={toggleShowTaskDetailsModal} />
+			{currentTaskId && (
+				<TaskDetailsModal
+					isOpen={isOpenDetailsModal}
+					handleCloseModal={toggleShowTaskDetailsModal}
+					taskId={currentTaskId}
+				/>
+			)}
 		</>
 	);
 };

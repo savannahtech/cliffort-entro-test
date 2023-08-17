@@ -12,7 +12,9 @@ interface Props {
 }
 
 export const TaskCard = ({ data, isShowStatusIndicator = true }: Props) => {
-	const { title, status, creationDate } = data;
+	const { title, status, creationDate, assignee } = data;
+
+	console.log({ assignee });
 	return (
 		<Stack justifyContent={'space-between'} direction={'row'} width={'98%'}>
 			<Stack direction={'row'} gap={2} alignItems={'center'}>
@@ -28,10 +30,11 @@ export const TaskCard = ({ data, isShowStatusIndicator = true }: Props) => {
 					<Stack direction={'row'} color={'#98A2B3'} fontWeight={'600'} alignItems={'center'} gap={0.5}>
 						<Stack direction={'row'} gap={0.25} alignItems={'center'}>
 							<Avatar
-								{...stringAvatar('Clifford Owusu')}
-								sx={{ width: 26, height: 26, background: stringToColor('Clifford') }}
+								{...stringAvatar(assignee.name)}
+								sx={{ width: 26, height: 26, bgcolor: stringToColor(assignee.name) }}
+								src={assignee.avatar}
 							/>
-							<Typography variant="body2">Assignee Name</Typography>
+							<Typography variant="body2">{assignee.name}</Typography>
 						</Stack>
 
 						<BsDot />
