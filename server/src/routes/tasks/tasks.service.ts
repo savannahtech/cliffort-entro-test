@@ -89,6 +89,11 @@ export class TasksService {
 										id: payload.relatedTaskId,
 									},
 								},
+								relatedTasks: {
+									connect: {
+										id: payload.relatedTaskId,
+									},
+								},
 						  }
 						: {}),
 					...(payload.assigneeId
@@ -100,6 +105,7 @@ export class TasksService {
 								},
 						  }
 						: {}),
+					description: payload.description,
 				},
 			});
 			return {
