@@ -16,6 +16,7 @@ export const MoreOptionalDetailsForm = ({ handleFormValueChange, formValues }: P
 	const toggleLinkToParentTaskModal = () => {
 		setIsOpenLinkToParentTaskModal((prev) => !prev);
 	};
+
 	return (
 		<>
 			<Stack mt={2}>

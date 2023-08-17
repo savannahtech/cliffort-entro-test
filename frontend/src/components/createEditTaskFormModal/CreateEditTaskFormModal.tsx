@@ -5,20 +5,44 @@ import React, { useState } from 'react';
 import CustomButton from '../customs/Button';
 import { InitialForm } from './InitialForm';
 import { MoreOptionalDetailsForm } from './MoreOptionalDetailsForm';
-import { ICommonModalProps, ICreateEditTaskFormValues } from '@/types';
+import { ICommonModalProps, ICreateEditTaskFormValues, ICreateTaskPayload } from '@/types';
+import { Mutations } from '@/api/mutations';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import { useMutation } from 'react-query';
 
 const inter = Inter({ subsets: ['latin'] });
 
-interface Props extends ICommonModalProps {}
+interface Props extends ICommonModalProps {
+	refetchAllTasks: Function;
+}
 
-export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal }: Props) => {
+export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTasks }: Props) => {
+	const mutatationsOptions = {
+		onError: (error: AxiosError) => {
+			toast.error(`${error.message}, Please try again!`, {
+				className: 'text-danger',
+			});
+		},
+		onSuccess: (data: any) => {
+			console.log(data);
+			toast.success(data.message);
+			handleCloseModal();
+			refetchAllTasks();
+		},
+	};
 	const [isShowMoreDetailsForm, setIsShowMoreDetailsForm] = useState(false);
 	const [formValues, setFormValues] = useState<ICreateEditTaskFormValues>({
 		title: '',
-		assigneeName: '',
+		assigneeId: '',
 		description: '',
 		relatedTask: undefined,
 	});
+	// create task mutation
+	const { mutateAsync: createSubMutateAsync, isLoading: isCreaetTaskLoading } = useMutation(
+		Mutations.createNewTask,
+		mutatationsOptions,
+	);
 
 	const toggleIsShowMoreDetailsForm = () => {
 		setIsShowMoreDetailsForm((prev) => !prev);
@@ -32,7 +56,19 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal }: Props) => 
 	};
 
 	const handleCreateTask = () => {
-		console.log({ formValues });
+		//TODO: add validations before saving
+		if (!formValues.title) {
+			toast.error('Please add a task title');
+			return;
+		}
+		//create
+		const apiPayload: ICreateTaskPayload = {
+			title: formValues.title,
+			assigneeId: formValues.assigneeId,
+			relatedTaskId: formValues.relatedTask?.id,
+			description: formValues.description,
+		};
+		createSubMutateAsync(apiPayload);
 	};
 
 	return (
@@ -62,7 +98,7 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal }: Props) => 
 						toggleIsShowMoreDetailsForm();
 					}}
 				/>
-				<CustomButton btnText="Finish" btnType="tertiary" onClick={handleCreateTask} />
+				<CustomButton btnText="Finish" btnType="tertiary" onClick={handleCreateTask} isLoading={isCreaetTaskLoading} />
 			</DialogActions>
 		</Dialog>
 	);

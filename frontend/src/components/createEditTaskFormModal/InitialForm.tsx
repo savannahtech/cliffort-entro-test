@@ -60,7 +60,7 @@ export const InitialForm = ({ handleFormValueChange, formValues }: Props) => {
 					sx={{ width: 300 }}
 					renderInput={(params) => <TextField {...params} label="Assignee" variant="standard" />}
 					onChange={(_e, newValue) => {
-						handleFormValueChange('assigneeName', newValue?.label);
+						handleFormValueChange('assigneeId', newValue?.id);
 					}}
 				/>
 			</Stack>

@@ -8,11 +8,13 @@ export const useGetAllTaskData = () => {
 		data: allTasks,
 		isLoading: isLoadingTasks,
 		error: tasksFetchingError,
+		refetch,
 	} = useQuery<TaskListType, AxiosError>('tasks', Queries.getAllTasks, allQueryOptions);
 
 	return {
 		allTasks,
 		isLoadingTasks,
 		tasksFetchingError,
+		refetchAllTasks: refetch,
 	};
 };

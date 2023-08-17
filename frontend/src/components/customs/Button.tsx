@@ -1,13 +1,14 @@
 import { CustomButtonTypes } from '@/types';
-import { Button, ButtonProps, Typography } from '@mui/material';
+import { Button, ButtonProps, CircularProgress, Typography } from '@mui/material';
 import React from 'react';
 
 interface Props extends ButtonProps {
 	btnText: string;
 	btnType?: CustomButtonTypes;
+	isLoading?: boolean;
 }
 
-const CustomButton = ({ btnText, btnType, ...rest }: Props) => {
+const CustomButton = ({ btnText, btnType, isLoading, ...rest }: Props) => {
 	return (
 		<Button
 			variant={btnType === 'tertiary' ? 'outlined' : 'contained'}
@@ -35,7 +36,7 @@ const CustomButton = ({ btnText, btnType, ...rest }: Props) => {
 			}}
 			{...rest}
 		>
-			<Typography textTransform={'none'}>{btnText}</Typography>
+			{isLoading ? <CircularProgress size={'12px'} /> : <Typography textTransform={'none'}>{btnText}</Typography>}
 		</Button>
 	);
 };

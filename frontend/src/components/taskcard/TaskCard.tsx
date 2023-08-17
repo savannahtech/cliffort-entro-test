@@ -29,13 +29,12 @@ export const TaskCard = ({ data, isShowStatusIndicator = true }: Props) => {
 					<Stack direction={'row'} color={'#98A2B3'} fontWeight={'600'} alignItems={'center'} gap={0.5}>
 						<Stack direction={'row'} gap={0.25} alignItems={'center'}>
 							<Avatar
-								{...stringAvatar(assignee.name)}
-								sx={{ width: 26, height: 26, bgcolor: stringToColor(assignee.name) }}
-								src={assignee.avatar}
+								{...stringAvatar(assignee?.name || '')}
+								sx={{ width: 26, height: 26, bgcolor: stringToColor(assignee?.name || '') }}
+								src={assignee?.avatar}
 							/>
-							<Typography variant="body2">{assignee.name}</Typography>
+							<Typography variant="body2">{assignee?.name || 'Unassigned'}</Typography>
 						</Stack>
-
 						<BsDot />
 						<Typography variant="body2" fontWeight={'500'}>
 							{formatDateToDisplay(creationDate)}

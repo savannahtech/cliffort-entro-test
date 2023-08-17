@@ -2,10 +2,8 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { Stack } from '@mui/material';
-import { TaskCard } from '.';
 import { TaskLists } from '../taskLists';
-import { TaskListType } from '@/types';
+import { IAssignee, TaskListType } from '@/types';
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -15,6 +13,7 @@ interface TabPanelProps {
 
 interface TaskCardDetailsTabsProps {
 	relatedTasks?: TaskListType;
+	watchers?: IAssignee[];
 }
 
 export const TaskCardDetailsTabs = ({ relatedTasks }: TaskCardDetailsTabsProps) => {
@@ -36,7 +35,7 @@ export const TaskCardDetailsTabs = ({ relatedTasks }: TaskCardDetailsTabsProps) 
 				{relatedTasks && <TaskLists taskLists={relatedTasks} />}
 			</CustomTabPanel>
 			<CustomTabPanel value={value} index={1}>
-				Watchers
+				To be implemented
 			</CustomTabPanel>
 		</Box>
 	);

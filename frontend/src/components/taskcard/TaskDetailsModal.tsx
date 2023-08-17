@@ -34,8 +34,6 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 		allQueryOptions,
 	);
 
-	console.log({ taskId });
-
 	if (taskDetailsFetchingError) {
 		toast.error(taskDetailsFetchingError.message || FAILED_TO_FETCH_MESSAGE);
 	}
@@ -80,7 +78,7 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 							</Stack>
 							<Stack gap={1}>
 								<Typography>Assignee</Typography>
-								<Chip label={taskDetails.assignee.name || 'Unassigned'} />
+								<Chip label={taskDetails.assignee?.name || 'Unassigned'} />
 							</Stack>
 						</Stack>
 						<Stack gap={1} mt={3.5}>
@@ -100,7 +98,7 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 							<TaskCardDetailsTabs relatedTasks={taskDetails.relatedTasks} />
 						</Stack>
 						<Stack direction={'row'} mt={2}>
-							<CustomButton btnText="Link to other tabs" variant="text" startIcon={<GrAdd />} />
+							<CustomButton btnText="Link to other task" variant="text" startIcon={<GrAdd />} />
 						</Stack>
 					</Stack>
 				) : (

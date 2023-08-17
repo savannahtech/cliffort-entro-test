@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 const inter = Inter({ subsets: ['latin'] });
 
 const Tasks = () => {
-	const { allTasks, isLoadingTasks, tasksFetchingError } = useGetAllTaskData();
+	const { allTasks, isLoadingTasks, tasksFetchingError, refetchAllTasks } = useGetAllTaskData();
 	const [isOpenCreateEditTaskForm, setIsOpenCreateEditTaskForm] = useState(false);
 
 	if (tasksFetchingError) {
@@ -39,12 +39,15 @@ const Tasks = () => {
 						</Typography>
 						<CustomButton btnType="tertiary" btnText="New Task" onClick={toggleShowCreatEditTaskForm} />
 					</Stack>
-					<CustomLoader loading={isLoadingTasks} />
+					<CustomLoader key={`${isLoadingTasks}`} loading={isLoadingTasks} />
 					{allTasks && allTasks.length ? <TaskLists taskLists={allTasks} /> : null}
-					{}
 				</Stack>
 			</main>
-			<CreateEditTaskFormModal isOpen={isOpenCreateEditTaskForm} handleCloseModal={toggleShowCreatEditTaskForm} />
+			<CreateEditTaskFormModal
+				isOpen={isOpenCreateEditTaskForm}
+				handleCloseModal={toggleShowCreatEditTaskForm}
+				refetchAllTasks={refetchAllTasks}
+			/>
 		</>
 	);
 };

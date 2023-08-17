@@ -22,7 +22,7 @@ export type TaskListType = Omit<ITaskFromAPI, 'relatedTasks' | 'description' | '
 
 export interface ICreateEditTaskFormValues {
 	title: string;
-	assigneeName: string;
+	assigneeId: string;
 	description: string;
 	relatedTask: RelatedTaskType;
 }
@@ -33,3 +33,10 @@ interface ICommonModalProps {
 }
 
 export type RelatedTaskType = Omit<ITaskFromAPI, 'relatedTasks' | 'description' | 'watchers'> | undefined;
+
+export interface ICreateTaskPayload {
+	title: string;
+	assigneeId?: string;
+	description?: string;
+  relatedTaskId?:string;
+}
