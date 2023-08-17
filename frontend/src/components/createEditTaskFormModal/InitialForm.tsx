@@ -1,7 +1,13 @@
-import { ICreateEditTaskFormValues } from '@/types';
+import { Queries, allQueryOptions } from '@/api/queries';
+import { IAssignee, ICreateEditTaskFormValues } from '@/types';
 import { Stack, TextField, Autocomplete } from '@mui/material';
+import { AxiosError } from 'axios';
 import React from 'react';
 import { MdAddTask } from 'react-icons/md';
+import { useQuery } from 'react-query';
+import { CustomLoader } from '../customs/Loader';
+import { toast } from 'react-toastify';
+import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
 
 interface Props {
 	handleFormValueChange: (fieldName: keyof ICreateEditTaskFormValues, value: any) => void;
@@ -9,6 +15,16 @@ interface Props {
 }
 
 export const InitialForm = ({ handleFormValueChange, formValues }: Props) => {
+	const { data: allUsers, error: usersFetchingError } = useQuery<IAssignee[], AxiosError>(
+		'users',
+		Queries.getAllUsers,
+		allQueryOptions,
+	);
+
+	if (usersFetchingError) {
+		toast.error(usersFetchingError.message || FAILED_TO_FETCH_MESSAGE);
+	}
+
 	return (
 		<Stack direction={'row'} gap={2} alignItems={'center'} justifyContent={'space-between'}>
 			<Stack direction={'row'} gap={2} alignItems={'center'} width={'60%'}>
@@ -28,12 +44,18 @@ export const InitialForm = ({ handleFormValueChange, formValues }: Props) => {
 					onChange={(e) => {
 						handleFormValueChange('title', e.target.value);
 					}}
+					value={formValues.title}
 				/>
 			</Stack>
 			<Autocomplete
 				disablePortal
 				id="assignee"
-				options={[{ label: 'Hello', id: 1 }]}
+				options={
+					allUsers?.map((item) => ({
+						label: item.name,
+						id: item.id,
+					})) || []
+				}
 				sx={{ width: 300 }}
 				renderInput={(params) => <TextField {...params} label="Assignee" variant="standard" />}
 				onChange={(_e, newValue) => {

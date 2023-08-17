@@ -6,7 +6,6 @@ import { API } from './http-common';
 export const Queries = {
 	getAllTasks: async () => {
 		const response = await API.get('/tasks');
-		console.log(response.data);
 		return response.data.data.tasks;
 	},
 
@@ -14,6 +13,11 @@ export const Queries = {
 		console.log(taskId);
 		const response = await API.get(`/tasks/${taskId}`);
 		return response.data.data;
+	},
+
+	getAllUsers: async () => {
+		const response = await API.get('/users');
+		return response.data.data.users;
 	},
 };
 
