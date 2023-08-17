@@ -8,7 +8,7 @@ interface Props extends ButtonProps {
 	isLoading?: boolean;
 }
 
-const CustomButton = ({ btnText, btnType, isLoading, ...rest }: Props) => {
+export const CustomButton = ({ btnText, btnType, isLoading, ...rest }: Props) => {
 	return (
 		<Button
 			variant={btnType === 'tertiary' ? 'outlined' : 'contained'}
@@ -40,5 +40,3 @@ const CustomButton = ({ btnText, btnType, isLoading, ...rest }: Props) => {
 		</Button>
 	);
 };
-
-export default CustomButton;

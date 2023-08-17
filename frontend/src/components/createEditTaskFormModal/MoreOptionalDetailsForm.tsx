@@ -1,6 +1,6 @@
 import { Stack, Divider, Typography, Box, TextField } from '@mui/material';
 import React, { useState } from 'react';
-import CustomButton from '../customs/Button';
+import { CustomButton } from '../customs';
 import { GrAdd } from 'react-icons/gr';
 import { ICreateEditTaskFormValues } from '@/types';
 import { LinkToOtherTaskModal } from '../linkToOtherTaskModal';

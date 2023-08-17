@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import React from 'react';
 import { MdAddTask } from 'react-icons/md';
 import { useQuery } from 'react-query';
-import { CustomLoader } from '../customs/Loader';
+import { CustomLoader } from '../customs';
 import { toast } from 'react-toastify';
 import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
 

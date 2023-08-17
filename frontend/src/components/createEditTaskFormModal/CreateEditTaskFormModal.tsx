@@ -2,7 +2,7 @@ import { Box, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Inter } from 'next/font/google';
 import React, { useState } from 'react';
-import CustomButton from '../customs/Button';
+import { CustomButton } from '../customs';
 import { InitialForm } from './InitialForm';
 import { MoreOptionalDetailsForm } from './MoreOptionalDetailsForm';
 import { ICommonModalProps, ICreateEditTaskFormValues, ICreateTaskPayload } from '@/types';

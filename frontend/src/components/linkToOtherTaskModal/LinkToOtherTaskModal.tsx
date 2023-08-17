@@ -3,7 +3,7 @@ import { ICommonModalProps, RelatedTaskType } from '@/types';
 import { Autocomplete, Box, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { Inter } from 'next/font/google';
 import React, { useState } from 'react';
-import CustomButton from '../customs/Button';
+import { CustomButton } from '../customs';
 const inter = Inter({ subsets: ['latin'] });
 
 interface Props extends ICommonModalProps {

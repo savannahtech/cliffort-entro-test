@@ -23,7 +23,7 @@ export const TaskCard = ({ data, isShowStatusIndicator = true }: Props) => {
 					src={'https://res.cloudinary.com/dhs3t6x02/image/upload/v1692277540/Icon_wbjpkd.svg'}
 					width={64}
 					height={64}
-					alt="hel"
+					alt="task-icon"
 				/>
 				<Stack direction={'column'}>
 					<Typography variant="h6">{title}</Typography>

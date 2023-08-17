@@ -1,13 +1,16 @@
 import { CreateEditTaskFormModal } from '@/components/createEditTaskFormModal';
-import CustomButton from '@/components/customs/Button';
-import { CustomLoader } from '@/components/customs/Loader';
+import { CustomButton } from '@/components/customs';
+import { CustomMultiSelectInput } from '@/components/customs';
+import { CustomLoader } from '@/components/customs';
 import { TaskLists } from '@/components/taskLists';
 import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
 import { useGetAllTaskData } from '@/hooks';
-import { Stack, Typography } from '@mui/material';
+import { Box, IconButton, Stack, TextField, Typography } from '@mui/material';
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
 import { useState } from 'react';
+import { BiFilterAlt } from 'react-icons/bi';
+import { GrClose } from 'react-icons/gr';
 import { toast } from 'react-toastify';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -15,6 +18,7 @@ const inter = Inter({ subsets: ['latin'] });
 const Tasks = () => {
 	const { allTasks, isLoadingTasks, tasksFetchingError, refetchAllTasks } = useGetAllTaskData();
 	const [isOpenCreateEditTaskForm, setIsOpenCreateEditTaskForm] = useState(false);
+	const [isShowFilters, setIsShowFilters] = useState(false);
 
 	if (tasksFetchingError) {
 		toast.error(tasksFetchingError.message || FAILED_TO_FETCH_MESSAGE);
@@ -22,6 +26,10 @@ const Tasks = () => {
 
 	const toggleShowCreatEditTaskForm = () => {
 		setIsOpenCreateEditTaskForm((prev) => !prev);
+	};
+
+	const toggleIsShowFilters = () => {
+		setIsShowFilters((prev) => !prev);
 	};
 
 	return (
@@ -38,7 +46,36 @@ const Tasks = () => {
 							Tasks
 						</Typography>
 						<CustomButton btnType="tertiary" btnText="New Task" onClick={toggleShowCreatEditTaskForm} />
+						<CustomButton
+							startIcon={<BiFilterAlt />}
+							btnType="primary"
+							btnText="Filter"
+							onClick={toggleIsShowFilters}
+						/>
 					</Stack>
+					{isShowFilters && (
+						<Stack gap={2} alignItems={'center'} direction={'row'} width={'100%'}>
+							<Box border={'1px solid #10182808'} bgcolor={'#EEF2F8'} p={1} borderRadius={2} width={'100%'}>
+								<Stack direction={'row'} gap={3} alignItems={'center'}>
+									<TextField
+										variant="outlined"
+										size="small"
+										fullWidth
+										placeholder="Filter by title and assignee name"
+									/>
+									<CustomMultiSelectInput
+										size="small"
+										label="Statuses"
+										options={['PENDING', 'IN PROGRESS', 'COMPLETED']}
+										getValue={(value) => console.log(value)}
+									/>
+								</Stack>
+							</Box>
+							<IconButton onClick={toggleIsShowFilters}>
+								<GrClose />
+							</IconButton>
+						</Stack>
+					)}
 					<CustomLoader key={`${isLoadingTasks}`} loading={isLoadingTasks} />
 					{allTasks && allTasks.length ? <TaskLists taskLists={allTasks} /> : null}
 				</Stack>
