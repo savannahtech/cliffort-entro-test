@@ -19,8 +19,10 @@ import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
 import { Theme } from '@mui/system';
 import { Mutations } from '@/api/mutations';
 import { useGetAllTaskData } from '@/hooks';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { DuplicateTaskFormModal } from '../duplicateTaskFormModal';
+import { CreateEditTaskFormModal } from '../createEditTaskFormModal';
+import { ModalCloseIconButton } from '../customs/ModalCloseIconButton';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,11 +32,13 @@ interface Props extends ICommonModalProps {
 
 export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) => {
 	const [isOpenDuplicateTaskFormModal, setIsOpenDuplicateTaskFormModal] = useState(false);
+	const [isOpenEditTaskForm, setIsOpenEditTaskForm] = useState(false);
 	const { refetchAllTasks } = useGetAllTaskData();
 	const {
 		data: taskDetails,
 		isLoading: isLoadingTaskDetails,
 		error: taskDetailsFetchingError,
+		refetch: refetchTaskDetails,
 	} = useQuery<ITaskFromAPI, AxiosError>(
 		['task-details', taskId],
 		() => Queries.getTaskDetails(taskId),
@@ -57,6 +61,10 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 		setIsOpenDuplicateTaskFormModal((prev) => !prev);
 	};
 
+	const toggleShowEditTaskFormModal = () => {
+		setIsOpenEditTaskForm((prev) => !prev);
+	};
+
 	if (taskDetailsFetchingError) {
 		toast.error(taskDetailsFetchingError.message || FAILED_TO_FETCH_MESSAGE);
 	}
@@ -73,10 +81,11 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 
 	const handleEditTaskClick = () => {
 		console.log('delete', taskDetails?.id);
+		toggleShowEditTaskFormModal();
 	};
 
 	return (
-		<>
+		<React.Fragment key={`${isLoadingTaskDetails}`}>
 			<Dialog
 				open={isOpen}
 				onClose={handleCloseModal}
@@ -86,18 +95,7 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 				className={inter.className}
 			>
 				<DialogTitle id="task-details-modal">Task Details</DialogTitle>
-				<IconButton
-					aria-label="close"
-					onClick={handleCloseModal}
-					sx={{
-						position: 'absolute',
-						right: 8,
-						top: 8,
-						color: (theme: Theme) => theme.palette.grey[500],
-					}}
-				>
-					<GrClose />
-				</IconButton>
+				<ModalCloseIconButton handleCloseModal={handleCloseModal} />
 				<DialogContent dividers={true}>
 					<CustomLoader loading={isLoadingTaskDetails} width={'60vh'} />
 					{!!taskDetails && (
@@ -120,7 +118,7 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 							<Stack direction={'row'} columnGap={10}>
 								<Stack gap={1}>
 									<Typography>Status</Typography>
-									<Chip label={taskDetails?.status} />
+									<Chip label={taskDetails?.status?.replace('_', ' ')} />
 								</Stack>
 								<Stack gap={1}>
 									<Typography>Date created</Typography>
@@ -177,6 +175,27 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 					handleCloseDetailsModal={handleCloseModal}
 				/>
 			)}
-		</>
+			{isOpenEditTaskForm && (
+				<CreateEditTaskFormModal
+					isOpen={isOpenEditTaskForm}
+					handleCloseModal={toggleShowEditTaskFormModal}
+					refetchAllTasks={refetchAllTasks}
+					refetchTaskDetails={refetchTaskDetails}
+					key={`${isOpenEditTaskForm}`}
+					mode="edit"
+					existingTaskDetails={{
+						title: taskDetails?.title ? taskDetails?.title : '',
+						assigneeId: taskDetails?.assignee.id || '',
+						description: taskDetails?.description || '',
+						relatedTask: undefined,
+						assignee: {
+							label: taskDetails?.assignee.name,
+							id: taskDetails?.assignee.id,
+						},
+						status: taskDetails?.status,
+					}}
+				/>
+			)}
+		</React.Fragment>
 	);
 };

@@ -4,8 +4,8 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent, SelectProps } from '@mui/material/Select';
-import { getValue } from '@mui/system';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { CustomSelectInputProps } from '@/types';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -25,10 +25,8 @@ function getStyles(name: string, personName: string[], theme: Theme) {
 	};
 }
 
-interface Props extends Partial<SelectProps> {
+interface Props extends CustomSelectInputProps {
 	options: string[];
-	label: string;
-	getValue: (value: string | string[]) => void;
 }
 
 export const CustomMultiSelectInput = ({ options, label, id, getValue, ...rest }: Props) => {

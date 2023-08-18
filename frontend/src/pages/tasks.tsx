@@ -10,6 +10,7 @@ import { TaskListQuery } from '@/types';
 import { Box, Stack, TextField, Typography } from '@mui/material';
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
+import React from 'react';
 import { useState } from 'react';
 import { BiFilterAlt } from 'react-icons/bi';
 import { toast } from 'react-toastify';
@@ -50,10 +51,17 @@ const Tasks = () => {
 			<main className={inter.className}>
 				<Stack padding={4} direction={'column'} rowGap={3} width={'80%'}>
 					<Stack direction={'row'} alignItems={'center'} gap={2}>
-						<Typography variant="h5" fontSize={22} fontWeight={'600'}>
+						<Typography variant="h5" fontSize={22} fontWeight={'600'} color={'#475467'} lineHeight={'18px'}>
 							Tasks
 						</Typography>
-						<CustomButton btnType="tertiary" btnText="New Task" onClick={toggleShowCreatEditTaskForm} />
+						<CustomButton
+							btnType="tertiary"
+							btnText="New Task"
+							onClick={toggleShowCreatEditTaskForm}
+							style={{
+								paddingRight: '30px',
+							}}
+						/>
 						<CustomButton
 							startIcon={<BiFilterAlt />}
 							btnType="primary"
@@ -93,12 +101,15 @@ const Tasks = () => {
 					{allTasks && allTasks.length ? <TaskLists taskLists={allTasks} /> : isLoadingTasks ? null : <EmptyTaskList />}
 				</Stack>
 			</main>
-			<CreateEditTaskFormModal
-				isOpen={isOpenCreateEditTaskForm}
-				handleCloseModal={toggleShowCreatEditTaskForm}
-				refetchAllTasks={refetchAllTasks}
-				key={`${isOpenCreateEditTaskForm}`}
-			/>
+			{isOpenCreateEditTaskForm && (
+				<CreateEditTaskFormModal
+					isOpen={isOpenCreateEditTaskForm}
+					handleCloseModal={toggleShowCreatEditTaskForm}
+					refetchAllTasks={refetchAllTasks}
+					key={`${isOpenCreateEditTaskForm}`}
+					mode="create"
+				/>
+			)}
 		</>
 	);
 };

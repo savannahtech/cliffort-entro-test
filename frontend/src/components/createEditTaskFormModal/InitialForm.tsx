@@ -1,20 +1,23 @@
 import { Queries, allQueryOptions } from '@/api/queries';
-import { IAssignee, ICreateEditTaskFormValues } from '@/types';
+import { IAssignee, ICreateEditTaskFormValues, TaskFormModeType } from '@/types';
 import { Stack, TextField, Autocomplete } from '@mui/material';
 import { AxiosError } from 'axios';
 import React from 'react';
 import { useQuery } from 'react-query';
 import { CustomLoader } from '../customs';
 import { toast } from 'react-toastify';
-import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
+import { FAILED_TO_FETCH_MESSAGE, STATUS_LIST } from '@/constants';
 import Image from 'next/image';
+import { CustomSingleSelectInput } from '../customs/CustomSingleSelectInput';
 
 interface Props {
 	handleFormValueChange: (fieldName: keyof ICreateEditTaskFormValues, value: any) => void;
 	formValues: ICreateEditTaskFormValues;
+	mode: TaskFormModeType;
 }
 
-export const InitialForm = ({ handleFormValueChange, formValues }: Props) => {
+export const InitialForm = ({ handleFormValueChange, formValues, mode }: Props) => {
+	const isInEditMode = mode === 'edit';
 	const {
 		data: allUsers,
 		error: usersFetchingError,
@@ -47,21 +50,47 @@ export const InitialForm = ({ handleFormValueChange, formValues }: Props) => {
 						value={formValues.title}
 					/>
 				</Stack>
-				<Autocomplete
-					disablePortal
-					id="assignee"
-					options={
-						allUsers?.map((item) => ({
-							label: item.name,
-							id: item.id,
-						})) || []
-					}
-					sx={{ width: 300 }}
-					renderInput={(params) => <TextField {...params} label="Assignee" variant="standard" />}
-					onChange={(_e, newValue) => {
-						handleFormValueChange('assigneeId', newValue?.id);
-					}}
-				/>
+				<Stack direction={'row'} gap={2} alignItems={'center'}>
+					<Autocomplete
+						disablePortal
+						id="assignee"
+						options={
+							allUsers?.map((item) => ({
+								label: item.name,
+								id: item.id,
+							})) || []
+						}
+						sx={{ width: 300 }}
+						renderInput={(params) => <TextField {...params} label="Assignee" variant="standard" />}
+						onChange={(_e, newValue) => {
+							handleFormValueChange('assigneeId', newValue?.id);
+							handleFormValueChange('assignee', newValue);
+						}}
+						value={formValues.assignee}
+					/>
+					{isInEditMode && (
+						<CustomSingleSelectInput
+							label="Status"
+							getValue={(value) => {
+								console.log(value);
+								handleFormValueChange('status', value);
+							}}
+							options={STATUS_LIST.map((item) =>
+								item === 'IN PROGRESS'
+									? {
+											label: item,
+											value: 'IN_PROGRESS',
+									  }
+									: {
+											label: item,
+											value: item,
+									  },
+							)}
+							fullWidth
+							value={formValues.status}
+						/>
+					)}
+				</Stack>
 			</Stack>
 			<Stack mt={2}>
 				<CustomLoader loading={isLoadingUsers} height={'20%'} text="Loading Assingees Data..." width={'100%'} />

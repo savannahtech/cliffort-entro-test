@@ -5,6 +5,7 @@ import { TaskDetailsModal } from '../taskcard/TaskDetailsModal';
 import { TaskListType } from '@/types';
 import { EmptyTaskList } from '../emptyTaskList';
 import { toast } from 'react-toastify';
+import { useCurrentTaskIdContext } from '@/context';
 
 interface Props {
 	taskLists: TaskListType;
@@ -12,16 +13,15 @@ interface Props {
 
 export const TaskLists = ({ taskLists }: Props) => {
 	const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
-	const [currentTaskId, setCurrentTaskId] = useState('');
+	const { updateCurrentTaskId, currentTaskId } = useCurrentTaskIdContext();
 
 	const toggleShowTaskDetailsModal = () => {
 		setIsOpenDetailsModal((prev) => !prev);
 	};
 
 	const handleTaskCardClick = (taskId: string) => {
-		// todo: add details
 		toggleShowTaskDetailsModal();
-		setCurrentTaskId(taskId);
+		updateCurrentTaskId(taskId);
 	};
 	return (
 		<>

@@ -1,3 +1,5 @@
+import { SelectProps } from '@mui/material';
+
 export type CustomButtonTypes = 'primary' | 'secondary' | 'tertiary';
 
 export type Status = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
@@ -25,6 +27,11 @@ export interface ICreateEditTaskFormValues {
 	assigneeId: string;
 	description: string;
 	relatedTask: RelatedTaskType;
+	assignee?: {
+		label?: string;
+		id?: string;
+	};
+	status?: Status;
 }
 
 interface ICommonModalProps {
@@ -34,12 +41,19 @@ interface ICommonModalProps {
 
 export type RelatedTaskType = Omit<ITaskFromAPI, 'relatedTasks' | 'description' | 'watchers'> | undefined;
 
-export interface ICreateTaskPayload {
+export interface ITaskPayload {
 	title: string;
 	assigneeId?: string;
 	description?: string;
 	relatedTaskId?: string;
 }
+
+export interface ICreateTaskPayload extends ITaskPayload {}
+
+export interface IUpdateTaskPayload extends ITaskPayload {
+	status: Status;
+}
+
 export interface TaskListQuery {
 	search?: string;
 	status?: Status[];
@@ -47,3 +61,10 @@ export interface TaskListQuery {
 export interface DuplicateTaskPayload {
 	title?: string;
 }
+
+export interface CustomSelectInputProps extends Partial<SelectProps> {
+	label: string;
+	getValue: (value: string | string[]) => void;
+}
+
+export type TaskFormModeType = 'create' | 'edit';

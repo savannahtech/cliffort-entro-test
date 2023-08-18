@@ -8,7 +8,7 @@ interface Props extends ButtonProps {
 	isLoading?: boolean;
 }
 
-export const CustomButton = ({ btnText, btnType, isLoading, ...rest }: Props) => {
+export const CustomButton = ({ btnText, btnType, isLoading, style, ...rest }: Props) => {
 	return (
 		<Button
 			variant={btnType === 'tertiary' ? 'outlined' : 'contained'}
@@ -30,11 +30,21 @@ export const CustomButton = ({ btnText, btnType, isLoading, ...rest }: Props) =>
 							borderColor: '#DFE3EB',
 					  }
 					: {}),
-				paddingRight: '25px',
+				borderRadius: '6px',
+				...style,
 			}}
 			{...rest}
 		>
-			{isLoading ? <CircularProgress size={'16px'} /> : <Typography textTransform={'none'}>{btnText}</Typography>}
+			{isLoading ? (
+				<CircularProgress
+					size={'16px'}
+					style={{
+						background: 'white',
+					}}
+				/>
+			) : (
+				<Typography textTransform={'none'}>{btnText}</Typography>
+			)}
 		</Button>
 	);
 };

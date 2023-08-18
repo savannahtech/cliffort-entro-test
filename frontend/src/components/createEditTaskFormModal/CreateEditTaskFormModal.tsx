@@ -5,19 +5,39 @@ import React, { useState } from 'react';
 import { CustomButton } from '../customs';
 import { InitialForm } from './InitialForm';
 import { MoreOptionalDetailsForm } from './MoreOptionalDetailsForm';
-import { ICommonModalProps, ICreateEditTaskFormValues, ICreateTaskPayload } from '@/types';
+import {
+	ICommonModalProps,
+	ICreateEditTaskFormValues,
+	ICreateTaskPayload,
+	IUpdateTaskPayload,
+	TaskFormModeType,
+} from '@/types';
 import { Mutations } from '@/api/mutations';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
+import { ModalCloseIconButton } from '../customs/ModalCloseIconButton';
+import { useCurrentTaskIdContext } from '@/context';
 
 const inter = Inter({ subsets: ['latin'] });
 
 interface Props extends ICommonModalProps {
 	refetchAllTasks: Function;
+	mode: TaskFormModeType;
+	existingTaskDetails?: ICreateEditTaskFormValues; // for edit
+	refetchTaskDetails?: Function;
 }
 
-export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTasks }: Props) => {
+export const CreateEditTaskFormModal = ({
+	isOpen,
+	handleCloseModal,
+	refetchAllTasks,
+	existingTaskDetails,
+	mode,
+	refetchTaskDetails,
+}: Props) => {
+	const isInEditMode = mode === 'edit';
+	const isInCreateMode = mode === 'create';
 	const mutatationsOptions = {
 		onError: (error: AxiosError) => {
 			toast.error(`${error.message}, Please try again!`, {
@@ -28,19 +48,31 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTa
 			console.log(data);
 			toast.success(data.message);
 			handleCloseModal();
-			refetchAllTasks();
+			isInCreateMode && refetchAllTasks();
+			isInEditMode && refetchTaskDetails && refetchTaskDetails();
 		},
 	};
-	const [isShowMoreDetailsForm, setIsShowMoreDetailsForm] = useState(false);
-	const [formValues, setFormValues] = useState<ICreateEditTaskFormValues>({
-		title: '',
-		assigneeId: '',
-		description: '',
-		relatedTask: undefined,
-	});
+	const [isShowMoreDetailsForm, setIsShowMoreDetailsForm] = useState(isInEditMode);
+	const [formValues, setFormValues] = useState<ICreateEditTaskFormValues>(
+		isInEditMode && existingTaskDetails
+			? existingTaskDetails
+			: {
+					title: '',
+					assigneeId: '',
+					description: '',
+					relatedTask: undefined,
+			  },
+	);
 	// create task mutation
 	const { mutateAsync: createNewTaskMutateAsync, isLoading: isCreaetTaskLoading } = useMutation(
 		Mutations.createNewTask,
+		mutatationsOptions,
+	);
+	const { currentTaskId } = useCurrentTaskIdContext();
+
+	// edit task mutation
+	const { mutateAsync: updateTaskMutateAsync, isLoading: isUpdateTaskLoading } = useMutation(
+		Mutations.updateTask,
 		mutatationsOptions,
 	);
 
@@ -55,10 +87,28 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTa
 		}));
 	};
 
-	const handleCreateTask = () => {
+	const handleFinishClick = () => {
 		// add validations before saving
 		if (!formValues.title) {
 			toast.error('Please add a task title');
+			return;
+		}
+
+		//update
+		if (isInEditMode && currentTaskId) {
+			const apiPayload: IUpdateTaskPayload = {
+				title: formValues.title,
+				assigneeId: formValues.assigneeId,
+				relatedTaskId: formValues.relatedTask?.id,
+				description: formValues.description,
+				status: formValues.status!,
+			};
+
+			updateTaskMutateAsync({
+				taskId: currentTaskId,
+				payload: apiPayload,
+			});
+
 			return;
 		}
 		//create
@@ -80,10 +130,11 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTa
 			maxWidth="lg"
 			className={inter.className}
 		>
-			<DialogTitle id="create-task-modal">Create New Task</DialogTitle>
+			<DialogTitle id="create-task-modal">{isInEditMode ? 'Edit Task' : 'Create New Task'}</DialogTitle>
+			<ModalCloseIconButton handleCloseModal={handleCloseModal} />
 			<DialogContent dividers={true}>
-				<Box width="60vw" minHeight={300}>
-					<InitialForm formValues={formValues} handleFormValueChange={handleFormValueChange} />
+				<Box width={isInEditMode ? '70vw' : '60vw'} minHeight={300}>
+					<InitialForm mode={mode} formValues={formValues} handleFormValueChange={handleFormValueChange} />
 					{isShowMoreDetailsForm ? (
 						<MoreOptionalDetailsForm formValues={formValues} handleFormValueChange={handleFormValueChange} />
 					) : null}
@@ -94,7 +145,7 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTa
 					btnText={isShowMoreDetailsForm ? 'Back' : 'Next'}
 					btnType="primary"
 					onClick={() => {
-						// add some validation before show the more optional details form
+						// validate task title
 						if (!isShowMoreDetailsForm && !formValues.title) {
 							toast.error('Please add a task title');
 							return;
@@ -102,7 +153,12 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTa
 						toggleIsShowMoreDetailsForm();
 					}}
 				/>
-				<CustomButton btnText="Finish" btnType="tertiary" onClick={handleCreateTask} isLoading={isCreaetTaskLoading} />
+				<CustomButton
+					btnText="Finish"
+					btnType="tertiary"
+					onClick={handleFinishClick}
+					isLoading={isCreaetTaskLoading || isUpdateTaskLoading}
+				/>
 			</DialogActions>
 		</Dialog>
 	);
