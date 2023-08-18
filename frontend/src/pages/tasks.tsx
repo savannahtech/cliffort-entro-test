@@ -91,7 +91,7 @@ const Tasks = () => {
 						</Stack>
 					)}
 					<CustomLoader key={`${isLoadingTasks}`} loading={isLoadingTasks} />
-					{allTasks && allTasks.length ? <TaskLists taskLists={allTasks} /> : <EmptyTaskList />}
+					{allTasks && allTasks.length ? <TaskLists taskLists={allTasks} /> : isLoadingTasks ? null : <EmptyTaskList />}
 				</Stack>
 			</main>
 			<CreateEditTaskFormModal
