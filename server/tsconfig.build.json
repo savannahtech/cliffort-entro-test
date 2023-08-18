@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "noEmit": false,
-    "removeComments": true
-  },
-  "include": ["./src/**/*.ts", "./src/**/*.pug"],
-  "exclude": ["node_modules", "**/__tests__", "dist", "**/__mocks__", "e2e"]
-}
