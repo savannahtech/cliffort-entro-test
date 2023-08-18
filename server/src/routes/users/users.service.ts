@@ -1,8 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaInstance } from '../../_services/PrismaSingleton';
 
 export class UsersService {
+	static _prismaClient = PrismaInstance;
 	get _prismaClient() {
-		return new PrismaClient();
+		return PrismaInstance;
 	}
 
 	async getUsers() {

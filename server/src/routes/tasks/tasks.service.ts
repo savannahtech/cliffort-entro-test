@@ -1,10 +1,12 @@
-import { PrismaClient, Status, type Task } from '@prisma/client';
+import { Status, type Task } from '@prisma/client';
 import { DuplicateTaskPayload, TaskListQuery } from './tasks.controller';
 import { TASK_NOT_FOUND_MES } from '../../constants';
+import { PrismaInstance } from '../../_services/PrismaSingleton';
 
 export class TasksService {
+	static _prismaClient = PrismaInstance;
 	get _prismaClient() {
-		return new PrismaClient();
+		return PrismaInstance;
 	}
 
 	async getTasks(query: TaskListQuery) {
@@ -138,7 +140,7 @@ export class TasksService {
 				};
 			}
 
-			const { title, status, relatedTaskId, assigneeId } = updatedData;
+			const { title, status, relatedTaskId, assigneeId, description } = updatedData;
 
 			//TODO: add functionality to update assignee data
 
@@ -148,6 +150,7 @@ export class TasksService {
 				data: {
 					title: title || existingTask.title,
 					status: status || existingTask.status,
+					description: description || existingTask.description,
 					...(relatedTaskId
 						? {
 								task: {
