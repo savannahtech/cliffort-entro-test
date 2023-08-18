@@ -14,7 +14,6 @@ export interface TaskIdParam {
 
 export interface DuplicateTaskPayload {
 	title?: string;
-	includeRelatedTask?: boolean;
 }
 
 const service = new TasksService();

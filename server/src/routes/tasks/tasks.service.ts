@@ -67,7 +67,11 @@ export class TasksService {
 					id: taskId,
 				},
 				include: {
-					relatedTasks: true,
+					relatedTasks: {
+						include: {
+							assignee: true,
+						},
+					},
 					assignee: true,
 					watchers: true,
 				},
@@ -229,16 +233,6 @@ export class TasksService {
 			const duplicateData: Partial<Task> = {
 				...existingTask,
 				title: payload?.title || `Copy of ${existingTask.title}`,
-				status: existingTask.status,
-				...(existingTask.relatedTaskId && payload?.includeRelatedTask
-					? {
-							task: {
-								connect: {
-									id: existingTask.relatedTaskId,
-								},
-							},
-					  }
-					: {}),
 			};
 
 			//remove existing id
