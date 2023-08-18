@@ -44,3 +44,6 @@ export interface TaskListQuery {
 	search?: string;
 	status?: Status[];
 }
+export interface DuplicateTaskPayload {
+	title?: string;
+}

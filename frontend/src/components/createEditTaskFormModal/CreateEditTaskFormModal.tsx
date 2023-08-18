@@ -39,7 +39,7 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTa
 		relatedTask: undefined,
 	});
 	// create task mutation
-	const { mutateAsync: createSubMutateAsync, isLoading: isCreaetTaskLoading } = useMutation(
+	const { mutateAsync: createNewTaskMutateAsync, isLoading: isCreaetTaskLoading } = useMutation(
 		Mutations.createNewTask,
 		mutatationsOptions,
 	);
@@ -68,7 +68,7 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTa
 			relatedTaskId: formValues.relatedTask?.id,
 			description: formValues.description,
 		};
-		createSubMutateAsync(apiPayload);
+		createNewTaskMutateAsync(apiPayload);
 	};
 
 	return (

@@ -19,6 +19,8 @@ import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
 import { Theme } from '@mui/system';
 import { Mutations } from '@/api/mutations';
 import { useGetAllTaskData } from '@/hooks';
+import { useState } from 'react';
+import { DuplicateTaskFormModal } from '../duplicateTaskFormModal';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,6 +29,7 @@ interface Props extends ICommonModalProps {
 }
 
 export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) => {
+	const [isOpenDuplicateTaskFormModal, setIsOpenDuplicateTaskFormModal] = useState(false);
 	const { refetchAllTasks } = useGetAllTaskData();
 	const {
 		data: taskDetails,
@@ -50,6 +53,10 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 		},
 	});
 
+	const toggleIsOpenDuplicateTaskFormModal = () => {
+		setIsOpenDuplicateTaskFormModal((prev) => !prev);
+	};
+
 	if (taskDetailsFetchingError) {
 		toast.error(taskDetailsFetchingError.message || FAILED_TO_FETCH_MESSAGE);
 	}
@@ -61,6 +68,7 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 
 	const handleDuplicateTaskClick = () => {
 		console.log('delete', taskDetails?.id);
+		toggleIsOpenDuplicateTaskFormModal();
 	};
 
 	const handleEditTaskClick = () => {
@@ -68,96 +76,107 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 	};
 
 	return (
-		<Dialog
-			open={isOpen}
-			onClose={handleCloseModal}
-			aria-labelledby="task-details-modal"
-			aria-describedby="scroll-dialog-description"
-			maxWidth="lg"
-			className={inter.className}
-		>
-			<DialogTitle id="task-details-modal">Task Details</DialogTitle>
-			<IconButton
-				aria-label="close"
-				onClick={handleCloseModal}
-				sx={{
-					position: 'absolute',
-					right: 8,
-					top: 8,
-					color: (theme: Theme) => theme.palette.grey[500],
-				}}
+		<>
+			<Dialog
+				open={isOpen}
+				onClose={handleCloseModal}
+				aria-labelledby="task-details-modal"
+				aria-describedby="scroll-dialog-description"
+				maxWidth="lg"
+				className={inter.className}
 			>
-				<GrClose />
-			</IconButton>
-			<DialogContent dividers={true}>
-				<CustomLoader loading={isLoadingTaskDetails} width={'60vh'} />
-				{!!taskDetails && (
-					<TaskCard
-						data={{
-							id: taskDetails.id,
-							title: taskDetails.title,
-							assignee: taskDetails.assignee,
-							creationDate: taskDetails.creationDate,
-							status: taskDetails.status,
-						}}
-						isShowStatusIndicator={false}
-					/>
-				)}
-				<Stack mt={2}>
-					<Divider />
-				</Stack>
-				{taskDetails ? (
-					<Stack p={3} pt={4}>
-						<Stack direction={'row'} columnGap={10}>
-							<Stack gap={1}>
-								<Typography>Status</Typography>
-								<Chip label={taskDetails?.status} />
-							</Stack>
-							<Stack gap={1}>
-								<Typography>Date created</Typography>
-								<Chip label={formatDateToDisplay(taskDetails.creationDate)} />
-							</Stack>
-							<Stack gap={1}>
-								<Typography>Assignee</Typography>
-								<Chip label={taskDetails.assignee?.name || 'Unassigned'} />
-							</Stack>
-						</Stack>
-						<Stack gap={1} mt={3.5}>
-							<Typography>Description</Typography>
-							<Box
-								sx={{
-									bgcolor: '#EEF2F8',
-								}}
-								p={3}
-								paddingBottom={5}
-								borderRadius={2}
-							>
-								{taskDetails?.description || ''}
-							</Box>
-						</Stack>
-						<Stack mt={5}>
-							<TaskCardDetailsTabs relatedTasks={taskDetails.relatedTasks} />
-						</Stack>
-						<Stack direction={'row'} mt={2}>
-							<CustomButton btnText="Link to other task" variant="text" startIcon={<GrAdd />} />
-						</Stack>
+				<DialogTitle id="task-details-modal">Task Details</DialogTitle>
+				<IconButton
+					aria-label="close"
+					onClick={handleCloseModal}
+					sx={{
+						position: 'absolute',
+						right: 8,
+						top: 8,
+						color: (theme: Theme) => theme.palette.grey[500],
+					}}
+				>
+					<GrClose />
+				</IconButton>
+				<DialogContent dividers={true}>
+					<CustomLoader loading={isLoadingTaskDetails} width={'60vh'} />
+					{!!taskDetails && (
+						<TaskCard
+							data={{
+								id: taskDetails.id,
+								title: taskDetails.title,
+								assignee: taskDetails.assignee,
+								creationDate: taskDetails.creationDate,
+								status: taskDetails.status,
+							}}
+							isShowStatusIndicator={false}
+						/>
+					)}
+					<Stack mt={2}>
+						<Divider />
 					</Stack>
-				) : (
-					'No details'
+					{taskDetails ? (
+						<Stack p={3} pt={4}>
+							<Stack direction={'row'} columnGap={10}>
+								<Stack gap={1}>
+									<Typography>Status</Typography>
+									<Chip label={taskDetails?.status} />
+								</Stack>
+								<Stack gap={1}>
+									<Typography>Date created</Typography>
+									<Chip label={formatDateToDisplay(taskDetails.creationDate)} />
+								</Stack>
+								<Stack gap={1}>
+									<Typography>Assignee</Typography>
+									<Chip label={taskDetails.assignee?.name || 'Unassigned'} />
+								</Stack>
+							</Stack>
+							<Stack gap={1} mt={3.5}>
+								<Typography>Description</Typography>
+								<Box
+									sx={{
+										bgcolor: '#EEF2F8',
+									}}
+									p={3}
+									paddingBottom={5}
+									borderRadius={2}
+								>
+									{taskDetails?.description || ''}
+								</Box>
+							</Stack>
+							<Stack mt={5}>
+								<TaskCardDetailsTabs relatedTasks={taskDetails.relatedTasks} />
+							</Stack>
+							<Stack direction={'row'} mt={2}>
+								<CustomButton btnText="Link to other task" variant="text" startIcon={<GrAdd />} />
+							</Stack>
+						</Stack>
+					) : (
+						'No details'
+					)}
+				</DialogContent>
+				{taskDetails?.id && (
+					<DialogActions>
+						<CustomButton btnText="Duplicate" color="info" onClick={handleDuplicateTaskClick} />
+						<CustomButton btnText="Edit" color="success" onClick={handleEditTaskClick} />
+						<CustomButton
+							btnText="Delete"
+							color="error"
+							onClick={handleDeleteTaskClick}
+							isLoading={isDeleteTaskLoading}
+						/>
+					</DialogActions>
 				)}
-			</DialogContent>
-			{taskDetails?.id && (
-				<DialogActions>
-					<CustomButton btnText="Duplicate" color="info" onClick={handleDuplicateTaskClick} />
-					<CustomButton btnText="Edit" color="success" onClick={handleEditTaskClick} />
-					<CustomButton
-						btnText="Delete"
-						color="error"
-						onClick={handleDeleteTaskClick}
-						isLoading={isDeleteTaskLoading}
-					/>
-				</DialogActions>
+			</Dialog>
+			{isOpenDuplicateTaskFormModal && (
+				<DuplicateTaskFormModal
+					isOpen={isOpenDuplicateTaskFormModal}
+					handleCloseModal={toggleIsOpenDuplicateTaskFormModal}
+					currentTaskId={taskDetails?.id ? taskDetails?.id : ''}
+					currentTaskTitle={taskDetails?.title ? taskDetails?.title : ''}
+					handleCloseDetailsModal={handleCloseModal}
+				/>
 			)}
-		</Dialog>
+		</>
 	);
 };
