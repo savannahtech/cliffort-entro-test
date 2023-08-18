@@ -130,6 +130,10 @@ export class TasksService {
 
 	async updateTask(taskId: string, updatedData: Partial<Task>) {
 		try {
+			if (taskId === updatedData?.relatedTaskId) {
+				throw new Error('Cannot relate task to itself');
+			}
+
 			const existingTask = await this._prismaClient.task.findUnique({
 				where: { id: taskId },
 			});
