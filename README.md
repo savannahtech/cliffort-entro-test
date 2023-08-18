@@ -146,7 +146,7 @@ To clone and run the application on your local machine, follow these steps:
 Please refer to the [README.md](./server/README.md) in the server directory for instructions on setting up and running the backend.
 
 ### Running the Frontend
-Please refer to the [README.md](./frontend/README.md) in the server directory for instructions on setting up and running the backend.
+Please refer to the [README.md](./frontend/README.md) in the frontend directory for instructions on setting up and running the backend.
 
 
 Thank you!
