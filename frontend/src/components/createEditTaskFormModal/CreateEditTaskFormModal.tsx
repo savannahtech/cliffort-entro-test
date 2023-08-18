@@ -94,7 +94,7 @@ export const CreateEditTaskFormModal = ({ isOpen, handleCloseModal, refetchAllTa
 					btnText={isShowMoreDetailsForm ? 'Back' : 'Next'}
 					btnType="primary"
 					onClick={() => {
-						// TODO: add some validation before show the more optional details form
+						// add some validation before show the more optional details form
 						if (!isShowMoreDetailsForm && !formValues.title) {
 							toast.error('Please add a task title');
 							return;

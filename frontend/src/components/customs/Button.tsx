@@ -29,9 +29,7 @@ export const CustomButton = ({ btnText, btnType, isLoading, ...rest }: Props) =>
 							color: '#475467',
 							borderColor: '#DFE3EB',
 					  }
-					: {
-							color: '#475467',
-					  }),
+					: {}),
 				paddingRight: '25px',
 			}}
 			{...rest}

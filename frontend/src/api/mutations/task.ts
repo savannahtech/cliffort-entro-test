@@ -6,5 +6,9 @@ export const Task = {
 		const { data } = await API.post('/tasks', { data: values });
 		return data;
 	},
+	deleteTask: async (taskId: string) => {
+		const response = await API.delete(`/tasks/${taskId}`);
+		return response.data.data;
+	},
 	// add the rest
 };

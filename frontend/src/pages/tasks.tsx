@@ -4,15 +4,14 @@ import { CustomMultiSelectInput } from '@/components/customs';
 import { CustomLoader } from '@/components/customs';
 import { EmptyTaskList } from '@/components/emptyTaskList';
 import { TaskLists } from '@/components/taskLists';
-import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
+import { FAILED_TO_FETCH_MESSAGE, STATUS_LIST } from '@/constants';
 import { useGetAllTaskData } from '@/hooks';
 import { TaskListQuery } from '@/types';
-import { Box, IconButton, Stack, TextField, Typography } from '@mui/material';
+import { Box, Stack, TextField, Typography } from '@mui/material';
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
 import { useState } from 'react';
 import { BiFilterAlt } from 'react-icons/bi';
-import { GrClose } from 'react-icons/gr';
 import { toast } from 'react-toastify';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -79,7 +78,7 @@ const Tasks = () => {
 									<CustomMultiSelectInput
 										size="small"
 										label="Statuses"
-										options={['PENDING', 'IN PROGRESS', 'COMPLETED']}
+										options={STATUS_LIST}
 										getValue={(value) => {
 											handleFiltering('status', value);
 										}}

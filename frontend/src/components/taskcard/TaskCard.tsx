@@ -1,6 +1,5 @@
 import { Avatar, Box, Divider, Stack, Typography } from '@mui/material';
 import React from 'react';
-import { BiTask } from 'react-icons/bi';
 import { BsDot } from 'react-icons/bs';
 import { IoChevronForward } from 'react-icons/io5';
 import { formatDateToDisplay, stringAvatar, stringToColor } from '@/utils';

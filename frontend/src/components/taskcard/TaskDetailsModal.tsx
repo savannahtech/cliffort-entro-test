@@ -4,18 +4,21 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { TaskCard } from '.';
 import { CustomButton } from '../customs';
-import { Divider, Stack, Typography, Chip, Box } from '@mui/material';
-import { GrAdd } from 'react-icons/gr';
+import { Divider, Stack, Typography, Chip, Box, IconButton } from '@mui/material';
+import { GrAdd, GrClose } from 'react-icons/gr';
 import { TaskCardDetailsTabs } from './TaskCardDetailsTabs';
 import { Inter } from 'next/font/google';
 import { ICommonModalProps, ITaskFromAPI } from '@/types';
 import { Queries, allQueryOptions } from '@/api/queries';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { AxiosError } from 'axios';
 import { CustomLoader } from '../customs';
 import { toast } from 'react-toastify';
 import { formatDateToDisplay } from '@/utils';
 import { FAILED_TO_FETCH_MESSAGE } from '@/constants';
+import { Theme } from '@mui/system';
+import { Mutations } from '@/api/mutations';
+import { useGetAllTaskData } from '@/hooks';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,6 +27,7 @@ interface Props extends ICommonModalProps {
 }
 
 export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) => {
+	const { refetchAllTasks } = useGetAllTaskData();
 	const {
 		data: taskDetails,
 		isLoading: isLoadingTaskDetails,
@@ -33,10 +37,35 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 		() => Queries.getTaskDetails(taskId),
 		allQueryOptions,
 	);
+	const { mutateAsync: deleteTaskMutateAsync, isLoading: isDeleteTaskLoading } = useMutation(Mutations.deleteTask, {
+		onError: (error: AxiosError) => {
+			toast.error(`${error.message}, Please try again!`, {
+				className: 'text-danger',
+			});
+		},
+		onSuccess: (data) => {
+			toast.success(data.message);
+			handleCloseModal();
+			refetchAllTasks();
+		},
+	});
 
 	if (taskDetailsFetchingError) {
 		toast.error(taskDetailsFetchingError.message || FAILED_TO_FETCH_MESSAGE);
 	}
+
+	const handleDeleteTaskClick = () => {
+		console.log('delete', taskDetails?.id);
+		taskDetails?.id && deleteTaskMutateAsync(taskDetails.id);
+	};
+
+	const handleDuplicateTaskClick = () => {
+		console.log('delete', taskDetails?.id);
+	};
+
+	const handleEditTaskClick = () => {
+		console.log('delete', taskDetails?.id);
+	};
 
 	return (
 		<Dialog
@@ -48,6 +77,18 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 			className={inter.className}
 		>
 			<DialogTitle id="task-details-modal">Task Details</DialogTitle>
+			<IconButton
+				aria-label="close"
+				onClick={handleCloseModal}
+				sx={{
+					position: 'absolute',
+					right: 8,
+					top: 8,
+					color: (theme: Theme) => theme.palette.grey[500],
+				}}
+			>
+				<GrClose />
+			</IconButton>
 			<DialogContent dividers={true}>
 				<CustomLoader loading={isLoadingTaskDetails} width={'60vh'} />
 				{!!taskDetails && (
@@ -105,9 +146,18 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 					'No details'
 				)}
 			</DialogContent>
-			<DialogActions>
-				<CustomButton btnText="Close" btnType="primary" onClick={handleCloseModal} />
-			</DialogActions>
+			{taskDetails?.id && (
+				<DialogActions>
+					<CustomButton btnText="Duplicate" color="info" onClick={handleDuplicateTaskClick} />
+					<CustomButton btnText="Edit" color="success" onClick={handleEditTaskClick} />
+					<CustomButton
+						btnText="Delete"
+						color="error"
+						onClick={handleDeleteTaskClick}
+						isLoading={isDeleteTaskLoading}
+					/>
+				</DialogActions>
+			)}
 		</Dialog>
 	);
 };
