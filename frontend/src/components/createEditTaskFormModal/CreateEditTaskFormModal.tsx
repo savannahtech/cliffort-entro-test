@@ -45,11 +45,13 @@ export const CreateEditTaskFormModal = ({
 			});
 		},
 		onSuccess: (data: any) => {
-			console.log(data);
 			toast.success(data.message);
 			handleCloseModal();
 			isInCreateMode && refetchAllTasks();
 			isInEditMode && refetchTaskDetails && refetchTaskDetails();
+			if (data?.error) {
+				toast.error(data?.error);
+			}
 		},
 	};
 	const [isShowMoreDetailsForm, setIsShowMoreDetailsForm] = useState(isInEditMode);

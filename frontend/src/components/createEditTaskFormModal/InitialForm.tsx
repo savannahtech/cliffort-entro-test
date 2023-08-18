@@ -72,7 +72,6 @@ export const InitialForm = ({ handleFormValueChange, formValues, mode }: Props) 
 						<CustomSingleSelectInput
 							label="Status"
 							getValue={(value) => {
-								console.log(value);
 								handleFormValueChange('status', value);
 							}}
 							options={STATUS_LIST.map((item) =>

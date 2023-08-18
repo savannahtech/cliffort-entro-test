@@ -2,7 +2,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { TaskCard } from '.';
 import { CustomButton } from '../customs';
 import { Divider, Stack, Typography, Chip, Box, IconButton } from '@mui/material';
 import { GrAdd, GrClose } from 'react-icons/gr';
@@ -23,6 +22,7 @@ import React, { useState } from 'react';
 import { DuplicateTaskFormModal } from '../duplicateTaskFormModal';
 import { CreateEditTaskFormModal } from '../createEditTaskFormModal';
 import { ModalCloseIconButton } from '../customs/ModalCloseIconButton';
+import { TaskCard } from '../taskcard';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -70,17 +70,14 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 	}
 
 	const handleDeleteTaskClick = () => {
-		console.log('delete', taskDetails?.id);
 		taskDetails?.id && deleteTaskMutateAsync(taskDetails.id);
 	};
 
 	const handleDuplicateTaskClick = () => {
-		console.log('delete', taskDetails?.id);
 		toggleIsOpenDuplicateTaskFormModal();
 	};
 
 	const handleEditTaskClick = () => {
-		console.log('delete', taskDetails?.id);
 		toggleShowEditTaskFormModal();
 	};
 
@@ -144,9 +141,6 @@ export const TaskDetailsModal = ({ isOpen, handleCloseModal, taskId }: Props) =>
 							</Stack>
 							<Stack mt={5}>
 								<TaskCardDetailsTabs relatedTasks={taskDetails.relatedTasks} />
-							</Stack>
-							<Stack direction={'row'} mt={2}>
-								<CustomButton btnText="Link to other task" variant="text" startIcon={<GrAdd />} />
 							</Stack>
 						</Stack>
 					) : (

@@ -13,7 +13,6 @@ export const Queries = {
 	},
 
 	getTaskDetails: async (taskId: string) => {
-		console.log(taskId);
 		const response = await API.get(`/tasks/${taskId}`);
 		return response.data.data;
 	},

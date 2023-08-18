@@ -49,7 +49,13 @@ const Tasks = () => {
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 			</Head>
 			<main className={inter.className}>
-				<Stack padding={4} direction={'column'} rowGap={3} width={'80%'}>
+				<Stack
+					padding={4}
+					direction={'column'}
+					rowGap={3}
+					width={'80%'}
+					key={isLoadingTasks ? 'loading' : 'not-loading'}
+				>
 					<Stack direction={'row'} alignItems={'center'} gap={2}>
 						<Typography variant="h5" fontSize={22} fontWeight={'600'} color={'#475467'} lineHeight={'18px'}>
 							Tasks

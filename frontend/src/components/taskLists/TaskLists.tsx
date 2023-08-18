@@ -1,11 +1,10 @@
 import { Box, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import { TaskCard } from '../taskcard';
-import { TaskDetailsModal } from '../taskcard/TaskDetailsModal';
 import { TaskListType } from '@/types';
 import { EmptyTaskList } from '../emptyTaskList';
-import { toast } from 'react-toastify';
 import { useCurrentTaskIdContext } from '@/context';
+import { TaskDetailsModal } from '../taskDetailsModal';
 
 interface Props {
 	taskLists: TaskListType;
